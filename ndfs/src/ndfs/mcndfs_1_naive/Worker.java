@@ -42,7 +42,7 @@ public class Worker extends Thread {
 	stateInfo = new HashMap<State, StateInfo>();
     }
 
-    private void dfsRed(State s) throws CycleFoundException {
+    private void dfsRed(State s) throws InterruptedException {
 	if(Thread.interrupted()){
 		throw new InterruptedException();
 	}
@@ -78,7 +78,7 @@ public class Worker extends Thread {
 
     }
 
-    private void dfsBlue(State s) throws CycleFoundException {
+    private void dfsBlue(State s) throws InterruptedException {
 	if(Thread.interrupted()){
 		throw new InterruptedException();
 	}
@@ -117,7 +117,7 @@ public class Worker extends Thread {
         }
     }
 
-    private void nndfs(State s) throws CycleFoundException {
+    private void nndfs(State s) throws InterruptedException {
         dfsBlue(s);
 	
 	//signal main thread that last worker has finished

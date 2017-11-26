@@ -55,8 +55,8 @@ public class NNDFS implements NDFS {
     }
 
     @Override
-    public boolean ndfs() {
-        for(int i = 0; i < threadinfo.nWorker; i++){
+    public boolean ndfs() throws InterruptedException{
+        for(int i = 0; i < threadInfo.nWorker; i++){
 	    // TODO put barrier inside threads to avoid cycles being found
 	    // before wait() is called here
             workers[i].start();
