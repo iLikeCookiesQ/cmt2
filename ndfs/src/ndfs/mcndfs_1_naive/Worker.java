@@ -42,7 +42,7 @@ public class Worker extends Thread {
 	threadInfo = threaddInfo;
 	graph = GraphFactory.createGraph(threaddInfo.pFile);
 	stateInfo = x;
-	pink = new HashSet<State>;
+	pink = new HashSet<State>();
     }
 
     private void dfsRed(State s) throws InterruptedException {
@@ -70,6 +70,7 @@ public class Worker extends Thread {
 	// done with children
 	if(s.isAccepting()){
 		synchronized(stateInfo){
+			// TODO: ask if synchronized locks onto pointer field, or pointer address
 			StateInfo inf = stateInfo.get(s);
 			if(--inf.redCount == 0){
 				synchronized(inf){  // free all waiters
@@ -119,7 +120,7 @@ public class Worker extends Thread {
         if (s.isAccepting()) {
 	    synchronized(stateInfo){
 	    	StateInfo inf = stateInfo.get(s);
-		if(inf != null){
+		if(inf != null){ 
 			inf.redCount++;
 	    	} else {
 			stateInfo.put(s, new StateInfo(false, 1));
