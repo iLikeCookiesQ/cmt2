@@ -1,10 +1,11 @@
 package ndfs.mcndfs_1_naive;
 import graph.State;
-import java.lang.Thread;
+//import java.lang.Thread;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.concurrent.*;
 import java.util.HashMap;
+import java.util.HashSet;
 //import java.lang.Condition;
 
 import graph.Graph;
@@ -20,6 +21,7 @@ import graph.GraphFactory;
 //TODO: data structure for pink? no longer use the local red.
 public class Worker extends Thread {
     private static HashMap<State, StateInfo> stateInfo;
+    private HashSet<State> pink;
     private final Graph graph;
     private final Colors colors = new Colors();
     public ThreadInfo threadInfo;
@@ -36,17 +38,18 @@ public class Worker extends Thread {
      * @throws FileNotFoundException
      *             is thrown in case the file could not be read.
      */
-    public Worker(ThreadInfo threaddInfo) throws FileNotFoundException {
+    public Worker(ThreadInfo threaddInfo, HashMap<State, StateInfo> x) throws FileNotFoundException {
 	threadInfo = threaddInfo;
 	graph = GraphFactory.createGraph(threaddInfo.pFile);
-	stateInfo = new HashMap<State, StateInfo>();
+	stateInfo = x;
+	pink = new HashSet<State>;
     }
 
     private void dfsRed(State s) throws InterruptedException {
 	if(Thread.interrupted()){
 		throw new InterruptedException();
 	}
-	colors.color(s, Color.RED); // make this node pink colors.color(t, Color.RED);
+	pink.add(s); // make this node pink colors.color(t, Color.RED);
         for (State t : graph.post(s)) {
             if (colors.hasColor(t, Color.CYAN)) {
                 // signal main thread of cycle found
@@ -56,26 +59,34 @@ public class Worker extends Thread {
 		}
 		return;
                 
-            } else if (!colors.hasColor(t, Color.RED)) { // this red is the pink from the paper
-                if(!stateInfo.get(t).red){ // this is the actual red
-			dfsRed(t);
+            } else if (!pink.contains(t)) { 
+		synchronized(stateInfo){
+                	if(!stateInfo.get(t).red){
+				dfsRed(t);
+			}
 		}
             }
         }
+	// done with children
 	if(s.isAccepting()){
-		StateInfo inf = stateInfo.get(s);
-		if(--inf.redCount == 0){
-			synchronized(inf){  // free all waiters
-				inf.notifyAll();
+		synchronized(stateInfo){
+			StateInfo inf = stateInfo.get(s);
+			if(--inf.redCount == 0){
+				synchronized(inf){  // free all waiters
+					inf.notifyAll();
+				}
 			}
 		}
 		synchronized(inf){ // wait until redCount hits 0
 			inf.wait();
 		}
 	}
-	// TODO:actual pink false
-	// TODO:shared red true
-
+	// shared red true
+	synchronized(stateInfo){
+		stateInfo.get(s).red = true;
+	}
+	// pink false
+	pink.remove(s);
     }
 
     private void dfsBlue(State s) throws InterruptedException {
@@ -93,22 +104,26 @@ public class Worker extends Thread {
 		int currentIdx = (firstChildIdx + i)%childCount; 
 		State currentChld = children[currentIdx];
 		if(colors.hasColor(currentChld, Color.WHITE)){
-			StateInfo inf = stateInfo.get(currentChld);
-			if(inf != null){
-				if(!inf.red) dfsBlue(currentChld);
-			} else {
-				stateInfo.put(currentChld, new StateInfo());
-				dfsBlue(currentChld);
+			synchronized(stateInfo){
+				StateInfo inf = stateInfo.get(currentChld);
+				if(inf != null){
+					if(!inf.red) dfsBlue(currentChld);
+				} else {
+					stateInfo.put(currentChld, new StateInfo());
+					dfsBlue(currentChld);
+				}
 			}
 		}
 	}
 	
         if (s.isAccepting()) {
-	    StateInfo inf = stateInfo.get(s);
-	    if(inf != null){
-		inf.redCount++;
-	    } else {
-		stateInfo.put(s, new StateInfo(false, 1));
+	    synchronized(stateInfo){
+	    	StateInfo inf = stateInfo.get(s);
+		if(inf != null){
+			inf.redCount++;
+	    	} else {
+			stateInfo.put(s, new StateInfo(false, 1));
+	    	}
 	    }
             dfsRed(s);
             colors.color(s, Color.RED);
@@ -142,18 +157,4 @@ public class Worker extends Thread {
     /*OLDCODE:public boolean getResult() {
         return result;
     }*/
-}
-
-class StateInfo{
-	boolean red;
-	int redCount;
-
-	StateInfo(){
-		red = false;
-		redCount = 0;
-	}
-	StateInfo(boolean b, int i){
-		red = b;
-		redCount = i;
-	}
 }

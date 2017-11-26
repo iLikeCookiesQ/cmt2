@@ -3,6 +3,7 @@ package ndfs.mcndfs_1_naive;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.Thread;
+import java.util.HashMap;
 //import java.lang.Condition;
 import ndfs.NDFS;
 
@@ -23,12 +24,27 @@ class ThreadInfo{
 	public int finishedCount;
 }
 
+class StateInfo{
+	boolean red;
+	int redCount;
+
+	StateInfo(){
+		red = false;
+		redCount = 0;
+	}
+	StateInfo(boolean b, int i){
+		red = b;
+		redCount = i;
+	}
+}
+
 public class NNDFS implements NDFS {
     private Thread[] workers;
     public ThreadInfo threadInfo;
     /*
     public volatile boolean[] terminationState = new boolean[1];
     public Condition termination;*/
+    public HashMap<State, StateInfo> stateInfo; // to be passed to threads
 
     /**
      * Constructs an NDFS object using the specified Promela file.
@@ -45,10 +61,11 @@ public class NNDFS implements NDFS {
 	threadInfo.termination = new MonitorObject();
 	threadInfo.sense = new boolean[nrWorker]; // TODO: initialize these
 	threadInfo.finishedCount = 0;
+	stateInfo = new HashMap<State, StateInfo>();
 
         workers = new Thread[nrWorker];
         for(int i=0; i<threadInfo.nWorker; i++){
-            workers[i] = new Worker(threadInfo);
+            workers[i] = new Worker(threadInfo, stateInfo);
         }
 
         //this.worker = new Worker(promelaFile);
