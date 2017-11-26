@@ -1,4 +1,5 @@
 package ndfs.mcndfs_1_naive;
+import graph.State;
 import java.lang.Thread;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -8,7 +9,6 @@ import java.util.HashMap;
 
 import graph.Graph;
 import graph.GraphFactory;
-import graph.State;
 //import NNDFS.MonitorObject;
 //import NNDFS.ThreadInfo;
 
@@ -19,7 +19,7 @@ import graph.State;
  */
 //TODO: data structure for pink? no longer use the local red.
 public class Worker extends Thread {
-    private static HashMap<Graph.State, StateInfo> stateInfo;
+    private static HashMap<State, StateInfo> stateInfo;
     private final Graph graph;
     private final Colors colors = new Colors();
     public ThreadInfo threadInfo;
@@ -39,15 +39,15 @@ public class Worker extends Thread {
     public Worker(ThreadInfo threaddInfo) throws FileNotFoundException {
 	threadInfo = threaddInfo;
 	graph = GraphFactory.createGraph(threaddInfo.pFile);
-	stateInfo = new HashMap<Graph.State, StateInfo>();
+	stateInfo = new HashMap<State, StateInfo>();
     }
 
-    private void dfsRed(Graph.State s) throws CycleFoundException {
+    private void dfsRed(State s) throws CycleFoundException {
 	if(Thread.interrupted()){
 		throw new InterruptedException();
 	}
 	colors.color(s, Color.RED); // make this node pink colors.color(t, Color.RED);
-        for (Graph.State t : graph.post(s)) {
+        for (State t : graph.post(s)) {
             if (colors.hasColor(t, Color.CYAN)) {
                 // signal main thread of cycle found
 		threadInfo.terminationResult = true;
@@ -78,7 +78,7 @@ public class Worker extends Thread {
 
     }
 
-    private void dfsBlue(Graph.State s) throws CycleFoundException {
+    private void dfsBlue(State s) throws CycleFoundException {
 	if(Thread.interrupted()){
 		throw new InterruptedException();
 	}
@@ -87,11 +87,11 @@ public class Worker extends Thread {
 	// randomly choose a child to begin recursive calls.
 	// access remainder of children in order.
 	int childCount = graph.post(s).size();
-	Graph.State[] children = new Graph.State[childCount];
+	State[] children = new State[childCount];
 	int firstChildIdx = ThreadLocalRandom.current().nextInt(childCount);
 	for(int i = 0; i < childCount; i++){
 		int currentIdx = (firstChildIdx + i)%childCount; 
-		Graph.State currentChld = children[currentIdx];
+		State currentChld = children[currentIdx];
 		if(colors.hasColor(currentChld, Color.WHITE)){
 			StateInfo inf = stateInfo.get(currentChld);
 			if(inf != null){
@@ -117,7 +117,7 @@ public class Worker extends Thread {
         }
     }
 
-    private void nndfs(Graph.State s) throws CycleFoundException {
+    private void nndfs(State s) throws CycleFoundException {
         dfsBlue(s);
 	
 	//signal main thread that last worker has finished
