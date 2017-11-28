@@ -105,9 +105,10 @@ public class Worker implements Runnable {
 	for(int i = 0; i < childCount; i++){
 		int currentIdx = (firstChildIdx + i)%childCount; 
 		State currentChld = children[currentIdx];
+		StateInfo inf;
 		if(colors.hasColor(currentChld, Color.WHITE)){
 			synchronized(stateInfo){
-				StateInfo inf = stateInfo.get(currentChld);
+				inf = stateInfo.get(currentChld);
 				if(inf == null){
 					stateInfo.put(currentChld, new StateInfo());
 					dfsBlue(currentChld);
