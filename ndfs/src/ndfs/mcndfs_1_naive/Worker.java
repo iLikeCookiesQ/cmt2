@@ -107,13 +107,12 @@ public class Worker implements Runnable {
 		if(colors.hasColor(currentChld, Color.WHITE)){
 			synchronized(stateInfo){
 				StateInfo inf = stateInfo.get(currentChld);
-				if(inf != null){
-					if(!inf.red) dfsBlue(currentChld);
-				} else {
+				if(inf == null){
 					stateInfo.put(currentChld, new StateInfo());
 					dfsBlue(currentChld);
 				}
 			}
+			if(!inf.red) dfsBlue(currentChld);
 		}
 	}
 	

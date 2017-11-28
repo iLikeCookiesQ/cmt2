@@ -18,7 +18,8 @@ import graph.GraphFactory;
  * <a href="http://www.cs.vu.nl/~tcs/cm/ndfs/laarman.pdf"> "the Laarman
  * paper"</a>.
  */
-public class Worker Extends Thread {
+//TODO: data structure for pink? no longer use the local red.
+public class Worker implements Runnable {
     private static HashMap<State, StateInfo> stateInfo;
     private HashSet<State> pink;
     private final Graph graph;
@@ -106,13 +107,12 @@ public class Worker Extends Thread {
 		if(colors.hasColor(currentChld, Color.WHITE)){
 			synchronized(stateInfo){
 				StateInfo inf = stateInfo.get(currentChld);
-				if(inf != null){
-					if(!inf.red) dfsBlue(currentChld);
-				} else {
+				if(inf == null){
 					stateInfo.put(currentChld, new StateInfo());
 					dfsBlue(currentChld);
 				}
 			}
+			if(!inf.red) dfsBlue(currentChld);
 		}
 	}
 	
