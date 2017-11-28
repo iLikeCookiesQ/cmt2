@@ -39,7 +39,9 @@ class StateInfo{
 }
 
 public class NNDFS implements NDFS {
-    private Thread[] workers;
+    private Worker work;
+    // private Worker[] workers;
+    private Thread[] threads;
     public ThreadInfo threadInfo;
     /*
     public volatile boolean[] terminationState = new boolean[1];
@@ -59,16 +61,17 @@ public class NNDFS implements NDFS {
 	threadInfo.nWorker = nrWorker;
 	threadInfo.terminationResult = false;
 	threadInfo.termination = new MonitorObject();
-	threadInfo.sense = new boolean[nrWorker]; // TODO: initialize these
+	//threadInfo.sense = new boolean[nrWorker]; // TODO: initialize these
 	threadInfo.finishedCount = 0;
 	stateInfo = new HashMap<State, StateInfo>();
 
-        workers = new Thread[nrWorker];
+        work = new Worker(threadInfo, stateInfo);
+	threads = new Thread[nrWorker];
+	/*
+	workers = new Worker[nrWorker];
         for(int i=0; i<threadInfo.nWorker; i++){
             workers[i] = new Worker(threadInfo, stateInfo);
-        }
-
-        //this.worker = new Worker(promelaFile);
+        }*/
     }
 
     @Override
@@ -76,7 +79,12 @@ public class NNDFS implements NDFS {
         for(int i = 0; i < threadInfo.nWorker; i++){
 	    // TODO put barrier inside threads to avoid cycles being found
 	    // before wait() is called here
-            workers[i].start();
+	    threads[i] = new Thread(work);
+            //workers[i].start();
+        }
+
+	for(int i = 0; i < threadInfo.nWorker; i++){
+	    threads[i].start();
         }
 
 	synchronized(threadInfo.termination){

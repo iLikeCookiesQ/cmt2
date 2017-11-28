@@ -1,4 +1,4 @@
-package ndfs.mcndfs_1_naive;
+package ndfs.mcndfs_alg3;
 import graph.State;
 //import java.lang.Thread;
 import java.io.File;
@@ -18,8 +18,7 @@ import graph.GraphFactory;
  * <a href="http://www.cs.vu.nl/~tcs/cm/ndfs/laarman.pdf"> "the Laarman
  * paper"</a>.
  */
-//TODO: data structure for pink? no longer use the local red.
-public class Worker extends Thread {
+public class Worker Extends Thread {
     private static HashMap<State, StateInfo> stateInfo;
     private HashSet<State> pink;
     private final Graph graph;

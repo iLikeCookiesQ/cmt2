@@ -19,7 +19,7 @@ import graph.GraphFactory;
  * paper"</a>.
  */
 //TODO: data structure for pink? no longer use the local red.
-public class Worker extends Thread {
+public class Worker implements Runnable {
     private static HashMap<State, StateInfo> stateInfo;
     private HashSet<State> pink;
     private final Graph graph;
