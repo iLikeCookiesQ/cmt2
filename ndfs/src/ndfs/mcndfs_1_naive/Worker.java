@@ -101,7 +101,7 @@ public class Worker implements Runnable {
 	// access remainder of children in order.
 	int childCount = graph.post(s).size();
 	if(childCount != 0){
-		State[] children = graph.post(s).toArray();
+		State[] children = (State[])(graph.post(s).toArray());
 		int firstChildIdx = ThreadLocalRandom.current().nextInt(childCount);
 		for(int i = 0; i < childCount; i++){
 			int currentIdx = (firstChildIdx + i)%childCount; 
