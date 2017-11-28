@@ -4,7 +4,7 @@ package ndfs;
  * This interface specifies the way this framework calls an NDFS implementation
  * and the way the result is passed.
  */
-public interface NDFS throws InterruptedException{
+public interface NDFS{
 
     /**
      * This method determines whether or not the graph has an accepting cycle,
@@ -12,5 +12,5 @@ public interface NDFS throws InterruptedException{
      *
      * @return whether the graph contains an accepting cycle.
      */
-    public boolean ndfs();
+    public boolean ndfs throws InterruptedException();
 }
