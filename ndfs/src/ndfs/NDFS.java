@@ -12,5 +12,5 @@ public interface NDFS{
      *
      * @return whether the graph contains an accepting cycle.
      */
-    public boolean ndfs throws InterruptedException();
+    public boolean ndfs();
 }

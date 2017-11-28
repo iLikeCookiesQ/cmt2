@@ -76,7 +76,7 @@ public class NNDFS implements NDFS {
     }
 
     @Override
-    public boolean ndfs() throws InterruptedException{
+    public boolean ndfs(){
         for(int i = 0; i < threadInfo.nWorker; i++){
 	    // TODO put barrier inside threads to avoid cycles being found
 	    // before wait() is called here
@@ -89,7 +89,9 @@ public class NNDFS implements NDFS {
         }
 
 	synchronized(threadInfo.termination){
-		threadInfo.termination.wait();
+		try{
+			threadInfo.termination.wait();
+		} catch (InterruptedException e) {}
 	}
 	if(threadInfo.terminationResult){
 	    //TODO terminate children
