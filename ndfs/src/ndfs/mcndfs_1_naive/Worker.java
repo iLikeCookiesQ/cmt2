@@ -101,7 +101,7 @@ public class Worker implements Runnable {
 	// access remainder of children in order.
 	int childCount = graph.post(s).size();
 	if(childCount != 0){
-		State[] children = new State[childCount];
+		State[] children = graph.post(s).toArray();
 		int firstChildIdx = ThreadLocalRandom.current().nextInt(childCount);
 		for(int i = 0; i < childCount; i++){
 			int currentIdx = (firstChildIdx + i)%childCount; 
@@ -111,7 +111,8 @@ public class Worker implements Runnable {
 				synchronized(stateInfo){
 					inf = stateInfo.get(currentChld);
 					if(inf == null){
-						stateInfo.put(currentChld, new StateInfo());
+						if = new StateInfo();
+						stateInfo.put(currentChld, inf);
 					}
 				}
 				if(!inf.red) dfsBlue(currentChld);
