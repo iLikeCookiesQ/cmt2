@@ -94,7 +94,7 @@ public class NNDFS implements NDFS {
 	if(threadInfo.terminationResult){
 	    //TODO terminate children
 	    for(int i = 0; i < threadInfo.nWorker; i++){
-		workers[i].interrupt();
+		threads[i].interrupt();
 	    }
 	}
 	return threadInfo.terminationResult;
