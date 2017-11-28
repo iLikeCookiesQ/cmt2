@@ -139,7 +139,7 @@ public class Worker implements Runnable {
         dfsBlue(s);
 	
 	//signal main thread that last worker has finished
-	if(getAndIncrement(threadInfo.finishedCount) == threadInfo.nWorker -1){
+	if(threadInfo.finishedCount.getAndIncrement() == threadInfo.nWorker -1){
 		threadInfo.terminationResult = false;
 		synchronized(threadInfo.termination){
 			threadInfo.termination.notify();
