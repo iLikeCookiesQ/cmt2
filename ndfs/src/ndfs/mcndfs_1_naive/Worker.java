@@ -147,15 +147,11 @@ public class Worker implements Runnable {
     }
     @Override
     public void run() {
-        nndfs(graph.getInitialState());
+	try{
+        	nndfs(graph.getInitialState());
+	} catch (InterruptedException e){}
     }
 
-
-
-    // returns random index 0 < x < nChildren
-    int getRandomIndex(int nChildren){
-	
-    }
     /*OLDCODE:public boolean getResult() {
         return result;
     }*/
