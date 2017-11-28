@@ -60,6 +60,7 @@ public class NNDFS implements NDFS {
      *             is thrown in case the file could not be read.
      */
     public NNDFS(File promelaFile, int nrWorker) throws FileNotFoundException {
+	threadInfo = new ThreadInfo();
 	threadInfo.pFile = promelaFile;
 	threadInfo.nWorker = nrWorker;
 	threadInfo.terminationResult = false;
