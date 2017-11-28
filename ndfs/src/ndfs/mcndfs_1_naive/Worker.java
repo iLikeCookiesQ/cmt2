@@ -100,21 +100,23 @@ public class Worker implements Runnable {
 	// randomly choose a child to begin recursive calls.
 	// access remainder of children in order.
 	int childCount = graph.post(s).size();
-	State[] children = new State[childCount];
-	int firstChildIdx = ThreadLocalRandom.current().nextInt(childCount);
-	for(int i = 0; i < childCount; i++){
-		int currentIdx = (firstChildIdx + i)%childCount; 
-		State currentChld = children[currentIdx];
-		StateInfo inf;
-		if(colors.hasColor(currentChld, Color.WHITE)){
-			synchronized(stateInfo){
-				inf = stateInfo.get(currentChld);
-				if(inf == null){
-					stateInfo.put(currentChld, new StateInfo());
-					dfsBlue(currentChld);
+	if(childCount != 0){
+		State[] children = new State[childCount];
+		int firstChildIdx = ThreadLocalRandom.current().nextInt(childCount);
+		for(int i = 0; i < childCount; i++){
+			int currentIdx = (firstChildIdx + i)%childCount; 
+			State currentChld = children[currentIdx];
+			StateInfo inf;
+			if(colors.hasColor(currentChld, Color.WHITE)){
+				synchronized(stateInfo){
+					inf = stateInfo.get(currentChld);
+					if(inf == null){
+						stateInfo.put(currentChld, new StateInfo());
+						dfsBlue(currentChld);
+					}
 				}
+				if(!inf.red) dfsBlue(currentChld);
 			}
-			if(!inf.red) dfsBlue(currentChld);
 		}
 	}
 	
