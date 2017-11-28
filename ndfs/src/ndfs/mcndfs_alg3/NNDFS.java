@@ -1,5 +1,6 @@
 package ndfs.mcndfs_alg3;
 
+import graph.State;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.Thread;
