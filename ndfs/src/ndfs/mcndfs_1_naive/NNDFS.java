@@ -22,7 +22,7 @@ class ThreadInfo{
 	public boolean terminationResult;
 	public MonitorObject termination;
 	public boolean[] sense;
-	public int finishedCount;
+	public AtomicInteger finishedCount;
 }
 
 class StateInfo{
@@ -63,7 +63,7 @@ public class NNDFS implements NDFS {
 	threadInfo.terminationResult = false;
 	threadInfo.termination = new MonitorObject();
 	//threadInfo.sense = new boolean[nrWorker]; // TODO: initialize these
-	threadInfo.finishedCount = 0;
+	threadInfo.finishedCount = new AtomicInteger(0);
 	stateInfo = new HashMap<State, StateInfo>();
 
         work = new Worker(threadInfo, stateInfo);
