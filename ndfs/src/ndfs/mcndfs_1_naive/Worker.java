@@ -112,7 +112,6 @@ public class Worker implements Runnable {
 					inf = stateInfo.get(currentChld);
 					if(inf == null){
 						stateInfo.put(currentChld, new StateInfo());
-						dfsBlue(currentChld);
 					}
 				}
 				if(!inf.red) dfsBlue(currentChld);
