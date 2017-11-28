@@ -102,7 +102,9 @@ public class Worker implements Runnable {
 	int childCount = graph.post(s).size();
 	if(childCount != 0){
 		State[] children = new State[childCount];
-		graph.post(s).toArray(children);
+		for(int i=0; i < childCount; i++){
+			children[i] = graph.post(s).get(i);
+		}
 		int firstChildIdx = ThreadLocalRandom.current().nextInt(childCount);
 		for(int i = 0; i < childCount; i++){
 			int currentIdx = (firstChildIdx + i)%childCount; 
