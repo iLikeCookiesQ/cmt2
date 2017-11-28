@@ -111,7 +111,7 @@ public class Worker implements Runnable {
 				synchronized(stateInfo){
 					inf = stateInfo.get(currentChld);
 					if(inf == null){
-						if = new StateInfo();
+						inf = new StateInfo();
 						stateInfo.put(currentChld, inf);
 					}
 				}
