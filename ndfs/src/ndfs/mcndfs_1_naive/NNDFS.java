@@ -89,11 +89,13 @@ public class NNDFS implements NDFS {
 
 	for(int i = 0; i < threadInfo.nWorker; i++){
 	    threads[i].start();
-        }
+	}
 
 	synchronized(threadInfo.termination){
 		try{
-			threadInfo.termination.wait();
+			while(!threadInfo.terminationResult) {
+				threadInfo.termination.wait();
+			}
 		} catch (InterruptedException e) {}
 	}
 	if(threadInfo.terminationResult){
