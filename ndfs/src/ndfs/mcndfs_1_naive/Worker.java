@@ -164,8 +164,8 @@ public class Worker implements Runnable {
 
 		//signal main thread that last worker has finished
 		synchronized(threadInfo.termination){
-			threadInfo.finishedCount = threadInfo.finishedCount + 1;
-			if(threadInfo.finishedCount.get() == threadInfo.nWorker){
+			int i = threadInfo.finishedCount.incrementAndGet();
+			if(i == threadInfo.nWorker){
 				threadInfo.terminationResult = false;
 				threadInfo.isTerminationSet = true;
 				threadInfo.termination.notify();
