@@ -20,7 +20,7 @@ import graph.GraphFactory;
  */
 //TODO: data structure for pink? no longer use the local red.
 public class Worker implements Runnable {
-	static final boolean DEBUG = false;
+	static final boolean DEBUG = true;
 	String threadName;
 	private static HashMap<State, StateInfo> stateInfo;
 	private HashSet<State> pink;
@@ -68,10 +68,10 @@ public class Worker implements Runnable {
 			} else if (!pink.contains(t)) {
 				synchronized(stateInfo){
 					inf = stateInfo.get(t);
-					if(inf == null){
+					/*if(inf == null){
 						inf = new StateInfo();
 						stateInfo.put(t, inf);
-					}
+					}*/
 					if(!inf.red){
 						dfsRed(t);
 					}
