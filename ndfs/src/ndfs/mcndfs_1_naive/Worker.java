@@ -45,8 +45,6 @@ public class Worker implements Runnable {
 		graph = GraphFactory.createGraph(threaddInfo.pFile);
 		stateInfo = x;
 		pink = new HashSet<State>();
-
-		if(DEBUG) threadName = Thread.currentThread().getName();
 	}
 
 	private void dfsRed(State s) throws InterruptedException {
@@ -179,6 +177,7 @@ public class Worker implements Runnable {
 	@Override
 	public void run() {
 		try{
+			if(DEBUG) threadName = Thread.currentThread().getName();
 			nndfs(graph.getInitialState());
 		} catch (InterruptedException e){}
 	}
