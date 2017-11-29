@@ -130,6 +130,7 @@ public class Worker implements Runnable {
 				children[i] = list.get(i);
 			}*/
 			int firstChildIdx = ThreadLocalRandom.current().nextInt(childCount);
+			boolean isRed;
 			for(int i = 0; i < childCount; i++){
 				int currentIdx = (firstChildIdx + i)%childCount;
 				State currentChld = children[currentIdx];
@@ -141,8 +142,9 @@ public class Worker implements Runnable {
 							inf = new StateInfo();
 							stateInfo.put(currentChld, inf);
 						}
+						isRed = inf.red;
 					}
-					if(!inf.red) dfsBlue(currentChld);
+					if(!isRed) dfsBlue(currentChld);
 				}
 			}
 		}
@@ -157,10 +159,9 @@ public class Worker implements Runnable {
 				inf.redCount++;	
 			}
 			dfsRed(s);
-			colors.color(s, Color.RED);
-		} else {
-			colors.color(s, Color.BLUE);
-		}
+			//colors.color(s, Color.RED);
+		} 
+		colors.color(s, Color.BLUE);
 	}
 
 	private void nndfs(State s) throws InterruptedException {
