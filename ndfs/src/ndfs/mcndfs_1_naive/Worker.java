@@ -69,19 +69,22 @@ public class Worker implements Runnable {
 		}
 		// done with children
 		if(s.isAccepting()){
-			//StateInfo inf;
+			StateInfo inf;
 			synchronized(stateInfo){
 				// TODO: ask if synchronized locks onto pointer field, or pointer address
-				//inf = stateInfo.get(s);
+				inf = stateInfo.get(s);
 				if(--inf.redCount == 0){
-					synchronized(stateInfo.get(s)){  // free all waiters
-						stateInfo.get(s).notifyAll();
+					synchronized(inf){  // free all waiters
+						inf.notifyAll();
 					}
 				}
 			}
-			synchronized(stateInfo.get(s)){ // wait until redCount hits 0
-				while(stateInfo.get(s).redCount != 0) {
-					stateInfo.get(s).wait();
+			synchronized(stateInfo){
+				inf = stateInfo.get(s);
+				synchronized(inf){ // wait until redCount hits 0
+					while(inf.redCount != 0) {
+						inf.wait();
+					}
 				}
 			}
 		}
