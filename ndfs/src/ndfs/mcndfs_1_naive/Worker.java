@@ -70,23 +70,29 @@ public class Worker implements Runnable {
 		}
 		// done with children
 		if(s.isAccepting()){
+			boolean skip = false;
 			StateInfo inf;
 			synchronized(stateInfo){
 				// TODO: ask if synchronized locks onto pointer field, or pointer address
 				inf = stateInfo.get(s);
 				inf.redCount--;
 				if(inf.redCount == 0){
+					skip = true;
 					synchronized(inf){  // free all waiters
 						inf.notifyAll();
 					}
 				}
 			}
-			synchronized(stateInfo){
-				inf = stateInfo.get(s);
-				synchronized(inf){ // wait until redCount hits 0
-					while(inf.redCount != 0) {
-						System.out.println(Thread.currentThread().getName() + " is waiting on redCount = " + inf.redCount);
-						inf.wait();
+			if(!skip){
+				synchronized(stateInfo){
+					inf = stateInfo.get(s);
+					synchronized(inf){ // wait until redCount hits 0
+						try{
+							while(inf.redCount != 0) {
+								System.out.println(Thread.currentThread().getName() + " is waiting on redCount = " + inf.redCount);
+								inf.wait();
+							}
+						} catch(InterruptedException e) {}
 					}
 				}
 			}
@@ -139,11 +145,11 @@ public class Worker implements Runnable {
 		if (s.isAccepting()) {
 			synchronized(stateInfo){
 				StateInfo inf = stateInfo.get(s);
-				if(inf != null){
-					inf.redCount++;
-				} else {
-					stateInfo.put(s, new StateInfo(false, 1));
-				}
+				if(inf == null){
+					inf = new StateInfo();
+					stateInfo.put(s, inf);
+				} 
+				inf.redCount++;	
 			}
 			dfsRed(s);
 			colors.color(s, Color.RED);
