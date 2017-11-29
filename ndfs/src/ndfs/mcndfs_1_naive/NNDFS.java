@@ -93,9 +93,7 @@ public class NNDFS implements NDFS {
 
 	synchronized(threadInfo.termination){
 		try{
-			while(!threadInfo.terminationResult) {
-				threadInfo.termination.wait();
-			}
+			threadInfo.termination.wait();
 		} catch (InterruptedException e) {}
 	}
 	if(threadInfo.terminationResult){

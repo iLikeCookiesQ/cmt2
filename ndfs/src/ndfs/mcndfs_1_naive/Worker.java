@@ -113,10 +113,10 @@ public class Worker implements Runnable {
 
 			//String threadName = Thread.currentThread().getName();
 			//System.out.println("Child Count " + childCount + " with thread " + threadName);
-		/*for(int i=0; i < childCount; i++){
-			//System.out.println("Count " + i + " with thread " + threadName);
-			children[i] = list.get(i);
-		}*/
+			/*for(int i=0; i < childCount; i++){
+				//System.out.println("Count " + i + " with thread " + threadName);
+				children[i] = list.get(i);
+			}*/
 			int firstChildIdx = ThreadLocalRandom.current().nextInt(childCount);
 			for(int i = 0; i < childCount; i++){
 				int currentIdx = (firstChildIdx + i)%childCount;
@@ -155,9 +155,9 @@ public class Worker implements Runnable {
 		dfsBlue(s);
 
 		//signal main thread that last worker has finished
-		if(threadInfo.finishedCount.getAndIncrement() == threadInfo.nWorker -1){
-			threadInfo.terminationResult = false;
-			synchronized(threadInfo.termination){
+		synchronized(threadInfo.termination){
+			if(threadInfo.finishedCount.getAndIncrement() == threadInfo.nWorker -1){
+				threadInfo.terminationResult = false;
 				threadInfo.termination.notify();
 			}
 		}
