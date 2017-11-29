@@ -46,6 +46,7 @@ public class Worker implements Runnable {
 	}
 
 	private void dfsRed(State s) throws InterruptedException {
+		StateInfo inf;
 		if(Thread.interrupted()){
 			throw new InterruptedException();
 		}
@@ -62,6 +63,11 @@ public class Worker implements Runnable {
 
 			} else if (!pink.contains(t)) {
 				synchronized(stateInfo){
+					inf = stateInfo.get(t);
+					if(inf == null){
+						inf = new StateInfo();
+						stateInfo.put(t, inf);
+					}
 					if(!stateInfo.get(t).red){
 						dfsRed(t);
 					}
@@ -71,7 +77,6 @@ public class Worker implements Runnable {
 		// done with children
 		if(s.isAccepting()){
 			boolean skip = false;
-			StateInfo inf;
 			synchronized(stateInfo){
 				// TODO: ask if synchronized locks onto pointer field, or pointer address
 				inf = stateInfo.get(s);
