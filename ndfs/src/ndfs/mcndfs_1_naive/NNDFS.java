@@ -99,7 +99,8 @@ public class NNDFS implements NDFS {
 			}
 		} catch (InterruptedException e) {}
 	}
-	if(threadInfo.terminationResult){
+	//if(threadInfo.terminationResult){
+	if(true){
 	    //TODO terminate children
 	    for(int i = 0; i < threadInfo.nWorker; i++){
 		threads[i].interrupt();

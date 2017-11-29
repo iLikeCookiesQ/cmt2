@@ -142,7 +142,9 @@ public class Worker implements Runnable {
 						}
 						isRed = inf.red;
 					}
-					if(!isRed) dfsBlue(currentChld);
+					if(!isRed){
+						dfsBlue(currentChld);
+					}
 				}
 			}
 		}
