@@ -46,11 +46,11 @@ public class Worker implements Runnable {
 	}
 
 	private void dfsRed(State s) throws InterruptedException {
-		StateInfo inf;
 		if(Thread.interrupted()){
 			throw new InterruptedException();
 		}
-		pink.add(s); // make this node pink colors.color(t, Color.RED);
+		StateInfo inf;
+		pink.add(s);
 		for (State t : graph.post(s)) {
 			if (colors.hasColor(t, Color.CYAN)) {
 				// signal main thread of cycle found
@@ -68,7 +68,7 @@ public class Worker implements Runnable {
 						inf = new StateInfo();
 						stateInfo.put(t, inf);
 					}
-					if(!stateInfo.get(t).red){
+					if(!inf.red){
 						dfsRed(t);
 					}
 				}
@@ -93,7 +93,7 @@ public class Worker implements Runnable {
 					inf = stateInfo.get(s);
 					synchronized(inf){ // wait until redCount hits 0
 						try{
-							while(inf.redCount != 0) {
+							while(inf.redCount > 0) {
 								System.out.println(Thread.currentThread().getName() + " is waiting on redCount = " + inf.redCount);
 								inf.wait();
 							}
@@ -125,10 +125,6 @@ public class Worker implements Runnable {
 
 			//String threadName = Thread.currentThread().getName();
 			//System.out.println("Child Count " + childCount + " with thread " + threadName);
-			/*for(int i=0; i < childCount; i++){
-				//System.out.println("Count " + i + " with thread " + threadName);
-				children[i] = list.get(i);
-			}*/
 			int firstChildIdx = ThreadLocalRandom.current().nextInt(childCount);
 			boolean isRed;
 			for(int i = 0; i < childCount; i++){
@@ -159,7 +155,6 @@ public class Worker implements Runnable {
 				inf.redCount++;	
 			}
 			dfsRed(s);
-			//colors.color(s, Color.RED);
 		} 
 		colors.color(s, Color.BLUE);
 	}
@@ -169,7 +164,8 @@ public class Worker implements Runnable {
 
 		//signal main thread that last worker has finished
 		synchronized(threadInfo.termination){
-			if(threadInfo.finishedCount.getAndIncrement() == threadInfo.nWorker -1){
+			threadInfo.finishedCount++;
+			if(threadInfo.finishedCount == threadInfo.nWorker){
 				threadInfo.terminationResult = false;
 				threadInfo.isTerminationSet = true;
 				threadInfo.termination.notify();

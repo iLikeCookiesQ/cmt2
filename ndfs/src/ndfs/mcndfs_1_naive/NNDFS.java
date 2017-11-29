@@ -73,21 +73,20 @@ public class NNDFS implements NDFS {
 
         work = new Worker(threadInfo, stateInfo);
 	threads = new Thread[nrWorker];
-	/*
-	workers = new Worker[nrWorker];
+
         for(int i=0; i<threadInfo.nWorker; i++){
-            workers[i] = new Worker(threadInfo, stateInfo);
-        }*/
+            threads[i] = new Thread(work);
+        }
     }
 
     @Override
     public boolean ndfs(){
+	/*
         for(int i = 0; i < threadInfo.nWorker; i++){
 	    // TODO put barrier inside threads to avoid cycles being found
 	    // before wait() is called here
 	    threads[i] = new Thread(work);
-            //workers[i].start();
-        }
+        }*/
 
 	for(int i = 0; i < threadInfo.nWorker; i++){
 	    threads[i].start();
@@ -107,7 +106,5 @@ public class NNDFS implements NDFS {
 	    }
 	}
 	return threadInfo.terminationResult;
-	
-        //OLDCODE:return worker.getResult();
     }
 }
