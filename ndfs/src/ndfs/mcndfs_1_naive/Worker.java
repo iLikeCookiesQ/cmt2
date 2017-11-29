@@ -73,7 +73,8 @@ public class Worker implements Runnable {
 			synchronized(stateInfo){
 				// TODO: ask if synchronized locks onto pointer field, or pointer address
 				inf = stateInfo.get(s);
-				if(--inf.redCount == 0){
+				inf.redCount--;
+				if(inf.redCount == 0){
 					synchronized(inf){  // free all waiters
 						inf.notifyAll();
 					}
@@ -83,6 +84,7 @@ public class Worker implements Runnable {
 				inf = stateInfo.get(s);
 				synchronized(inf){ // wait until redCount hits 0
 					while(inf.redCount != 0) {
+						System.out.println(Thread.currentThread().getName() + " is waiting on redCount = " + inf.redCount);
 						inf.wait();
 					}
 				}
