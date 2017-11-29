@@ -53,8 +53,9 @@ public class Worker implements Runnable {
 		for (State t : graph.post(s)) {
 			if (colors.hasColor(t, Color.CYAN)) {
 				// signal main thread of cycle found
-				threadInfo.terminationResult = true;
 				synchronized(threadInfo.termination){
+					threadInfo.terminationResult = true;
+					threadInfo.isTerminationSet = true;
 					threadInfo.termination.notify();
 				}
 				return;
@@ -158,6 +159,7 @@ public class Worker implements Runnable {
 		synchronized(threadInfo.termination){
 			if(threadInfo.finishedCount.getAndIncrement() == threadInfo.nWorker -1){
 				threadInfo.terminationResult = false;
+				threadInfo.isTerminationSet = true;
 				threadInfo.termination.notify();
 			}
 		}

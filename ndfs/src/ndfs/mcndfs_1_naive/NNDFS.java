@@ -19,6 +19,7 @@ class MonitorObject{
 }
 
 class ThreadInfo{
+	public boolean isTerminationSet;
 	public File pFile;
 	public int nWorker;
 	public boolean terminationResult;
@@ -61,6 +62,7 @@ public class NNDFS implements NDFS {
      */
     public NNDFS(File promelaFile, int nrWorker) throws FileNotFoundException {
 	threadInfo = new ThreadInfo();
+	threadInfo.isTerminationSet = false;
 	threadInfo.pFile = promelaFile;
 	threadInfo.nWorker = nrWorker;
 	threadInfo.terminationResult = false;
@@ -93,7 +95,9 @@ public class NNDFS implements NDFS {
 
 	synchronized(threadInfo.termination){
 		try{
-			threadInfo.termination.wait();
+			while(!threadInfo.isTerminationSet){
+				threadInfo.termination.wait();
+			}
 		} catch (InterruptedException e) {}
 	}
 	if(threadInfo.terminationResult){
