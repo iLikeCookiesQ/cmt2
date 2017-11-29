@@ -20,6 +20,8 @@ import graph.GraphFactory;
  */
 //TODO: data structure for pink? no longer use the local red.
 public class Worker implements Runnable {
+	static final boolean DEBUG = false;
+	String threadName;
 	private static HashMap<State, StateInfo> stateInfo;
 	private HashSet<State> pink;
 	private final Graph graph;
@@ -43,6 +45,8 @@ public class Worker implements Runnable {
 		graph = GraphFactory.createGraph(threaddInfo.pFile);
 		stateInfo = x;
 		pink = new HashSet<State>();
+
+		if(DEBUG) threadName = Thread.currentThread().getName();
 	}
 
 	private void dfsRed(State s) throws InterruptedException {
@@ -94,7 +98,8 @@ public class Worker implements Runnable {
 					synchronized(inf){ // wait until redCount hits 0
 						try{
 							while(inf.redCount > 0) {
-								System.out.println(Thread.currentThread().getName() + " is waiting on redCount = " + inf.redCount);
+								if(DEBUG) System.out.println(threadName + 
+									" is waiting on redCount = " + inf.redCount);
 								inf.wait();
 							}
 						} catch(InterruptedException e) {}
@@ -123,7 +128,6 @@ public class Worker implements Runnable {
 		if(childCount != 0){
 			State[] children = list.toArray(new State[childCount]);
 
-			//String threadName = Thread.currentThread().getName();
 			//System.out.println("Child Count " + childCount + " with thread " + threadName);
 			int firstChildIdx = ThreadLocalRandom.current().nextInt(childCount);
 			boolean isRed;
@@ -144,7 +148,7 @@ public class Worker implements Runnable {
 				}
 			}
 		}
-
+		if(DEBUG) System.out.println(threadName + " has dealt with the children of node " + s.toString());
 		if (s.isAccepting()) {
 			synchronized(stateInfo){
 				StateInfo inf = stateInfo.get(s);
