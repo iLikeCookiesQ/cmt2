@@ -22,7 +22,7 @@ import graph.GraphFactory;
 public class Worker implements Runnable {
 	static final boolean DEBUG = false;
 	String threadName;
-	private static HashMap<State, StateInfo> stateInfo;
+	public static HashMap<State, StateInfo> stateInfo;
 	private HashSet<State> pink;
 	private final Graph graph;
 	private final Colors colors = new Colors();
@@ -158,7 +158,7 @@ public class Worker implements Runnable {
 				StateInfo inf = stateInfo.get(s);
 				if(inf == null){
 					inf = new StateInfo();
-					stateInfo.put(s, inf);
+					//stateInfo.put(s, inf);
 				} 
 				inf.redCount++;	
 				stateInfo.put(s, inf);
