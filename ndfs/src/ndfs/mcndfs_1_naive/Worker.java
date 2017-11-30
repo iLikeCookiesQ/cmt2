@@ -22,7 +22,7 @@ import graph.GraphFactory;
 public class Worker implements Runnable {
 	static final boolean DEBUG = true;
 	String threadName;
-	public static HashMap<State, StateInfo> stateInfo;
+	public static volatile HashMap<State, StateInfo> stateInfo;
 	private HashSet<State> pink;
 	private final Graph graph;
 	private final Colors colors = new Colors();

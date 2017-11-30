@@ -50,7 +50,7 @@ public class NNDFS implements NDFS {
     /*
     public volatile boolean[] terminationState = new boolean[1];
     public Condition termination;*/
-    public HashMap<State, StateInfo> stateInfo; // to be passed to threads
+    public volatile HashMap<State, StateInfo> stateInfo; // to be passed to threads
 
     /**
      * Constructs an NDFS object using the specified Promela file.
