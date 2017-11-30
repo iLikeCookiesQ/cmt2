@@ -19,13 +19,13 @@ class MonitorObject{
 }
 
 class ThreadInfo{
-	public boolean isTerminationSet;
+	public volatile boolean isTerminationSet;
 	public File pFile;
 	public int nWorker;
-	public boolean terminationResult;
+	public volatile boolean terminationResult;
 	public MonitorObject termination;
 	public boolean[] sense;
-	public AtomicInteger finishedCount;
+	public volatile AtomicInteger finishedCount;
 }
 
 class StateInfo{
