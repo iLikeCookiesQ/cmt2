@@ -77,12 +77,14 @@ public class Worker implements Runnable {
 			}
 		}
 		// done with children
+		// decrement redCount and await it becoming 0 in the following block
 		if(s.isAccepting()){
 			boolean skip = false;
 			synchronized(stateInfo){
 				// TODO: ask if synchronized locks onto pointer field, or pointer address
 				inf = stateInfo.get(s);
 				inf.redCount--;
+				stateInfo.put(s, inf);
 				if(inf.redCount == 0){
 					skip = true;
 					synchronized(inf){  // free all waiters
