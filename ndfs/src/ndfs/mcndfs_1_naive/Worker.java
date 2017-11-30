@@ -66,7 +66,7 @@ public class Worker implements Runnable {
 			} else if (!pink.contains(t)) {
 				synchronized(stateInfo){
 					inf = stateInfo.get(t);
-					if(inf == null){
+					if(!stateInfo.containsKey(t)){
 						if(DEBUG) System.out.println(threadName + " has a red search that found a null hashmap entry on node " + t.toString());
 						inf = new StateInfo();
 						stateInfo.put(t, inf);
@@ -141,7 +141,7 @@ public class Worker implements Runnable {
 				if(colors.hasColor(currentChld, Color.WHITE)){
 					synchronized(stateInfo){
 						inf = stateInfo.get(currentChld);
-						if(inf == null){
+						if(!stateInfo.containsKey(currentChld)){
 							inf = new StateInfo();
 							stateInfo.put(currentChld, inf);
 						}
@@ -157,7 +157,7 @@ public class Worker implements Runnable {
 		if (s.isAccepting()) {
 			synchronized(stateInfo){
 				StateInfo inf = stateInfo.get(s);
-				if(inf == null){
+				if(!stateInfo.containsKey(s)){
 					inf = new StateInfo();
 					//stateInfo.put(s, inf);
 				} 
