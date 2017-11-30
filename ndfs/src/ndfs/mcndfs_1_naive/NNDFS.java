@@ -29,8 +29,8 @@ class ThreadInfo{
 }
 
 class StateInfo{
-	boolean red;
-	int redCount;
+	volatile boolean red;
+	volatile int redCount;
 
 	StateInfo(){
 		red = false;
