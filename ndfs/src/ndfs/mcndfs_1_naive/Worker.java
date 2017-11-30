@@ -107,7 +107,9 @@ public class Worker implements Runnable {
 		}
 		// shared red true
 		synchronized(stateInfo){
-			stateInfo.get(s).red = true;
+			inf = stateInfo.get(s);
+			inf.red = true;
+			stateInfo.put(s, inf);
 		}
 		// pink false
 		pink.remove(s);
