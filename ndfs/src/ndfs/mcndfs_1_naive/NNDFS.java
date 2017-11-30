@@ -46,7 +46,7 @@ public class NNDFS implements NDFS {
     private Worker work;
     // private Worker[] workers;
     private Thread[] threads;
-    public ThreadInfo threadInfo;
+    public static ThreadInfo threadInfo;
     /*
     public volatile boolean[] terminationState = new boolean[1];
     public Condition termination;*/

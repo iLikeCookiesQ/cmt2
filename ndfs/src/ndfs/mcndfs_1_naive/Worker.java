@@ -26,7 +26,7 @@ public class Worker implements Runnable {
 	private HashSet<State> pink;
 	private final Graph graph;
 	private final Colors colors = new Colors();
-	public ThreadInfo threadInfo;
+	public static ThreadInfo threadInfo;
 
 	// Throwing an exception is a convenient way to cut off the search in case a
 	// cycle is found.
