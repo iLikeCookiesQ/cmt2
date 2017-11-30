@@ -66,10 +66,10 @@ public class Worker implements Runnable {
 			} else if (!pink.contains(t)) {
 				synchronized(stateInfo){
 					inf = stateInfo.get(t);
-					/*if(inf == null){
+					if(inf == null){
 						inf = new StateInfo();
 						stateInfo.put(t, inf);
-					}*/
+					}
 					if(!inf.red){
 						dfsRed(t);
 					}
