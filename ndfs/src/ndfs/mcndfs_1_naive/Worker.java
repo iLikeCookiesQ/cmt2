@@ -20,7 +20,7 @@ import graph.GraphFactory;
  */
 //TODO: data structure for pink? no longer use the local red.
 public class Worker implements Runnable {
-	static final boolean DEBUG = false;
+	static final boolean DEBUG = true;
 	String threadName;
 	public static HashMap<State, StateInfo> stateInfo;
 	private HashSet<State> pink;
@@ -67,6 +67,7 @@ public class Worker implements Runnable {
 				synchronized(stateInfo){
 					inf = stateInfo.get(t);
 					if(inf == null){
+						if(DEBUG) System.out.println(threadName + " has a red search that found a null hashmap entry on node " + t.toString());
 						inf = new StateInfo();
 						stateInfo.put(t, inf);
 					}
@@ -152,7 +153,7 @@ public class Worker implements Runnable {
 				}
 			}
 		}
-		if(DEBUG) System.out.println(threadName + " has dealt with the children of node " + s.toString());
+		//if(DEBUG) System.out.println(threadName + " has dealt with the children of node " + s.toString());
 		if (s.isAccepting()) {
 			synchronized(stateInfo){
 				StateInfo inf = stateInfo.get(s);
