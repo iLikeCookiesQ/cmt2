@@ -157,6 +157,7 @@ public class Worker implements Runnable {
 					stateInfo.put(s, inf);
 				} 
 				inf.redCount++;	
+				stateInfo.put(s, inf);
 			}
 			dfsRed(s);
 		} 
