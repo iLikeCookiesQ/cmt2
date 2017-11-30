@@ -53,6 +53,7 @@ public class Worker implements Runnable {
 		}
 		StateInfo inf;
 		pink.add(s);
+		boolean isRed;
 		for (State t : graph.post(s)) {
 			if (colors.hasColor(t, Color.CYAN)) {
 				// signal main thread of cycle found
@@ -71,9 +72,10 @@ public class Worker implements Runnable {
 						inf = new StateInfo();
 						stateInfo.put(t, inf);
 					}
-					if(!inf.red){
-						dfsRed(t);
-					}
+					isRed = inf.red;
+				}
+				if(!isRed){
+					dfsRed(t);
 				}
 			}
 		}
