@@ -22,11 +22,11 @@ import graph.GraphFactory;
 public class Worker implements Runnable {
 	static final boolean DEBUG = true;
 	String threadName;
-	public static volatile HashMap<State, StateInfo> stateInfo;
+	public HashMap<State, StateInfo> stateInfo;
 	private HashSet<State> pink;
 	private final Graph graph;
 	private final Colors colors = new Colors();
-	public static ThreadInfo threadInfo;
+	public ThreadInfo threadInfo;
 
 	// Throwing an exception is a convenient way to cut off the search in case a
 	// cycle is found.
@@ -95,7 +95,8 @@ public class Worker implements Runnable {
 					}
 				}
 			}
-			if(!skip){
+			// No waiting needed if we already found that the redCount is 0 earlier. Save some hashmap accesses.
+			if(!skip){ 
 				synchronized(stateInfo){
 					inf = stateInfo.get(s);
 					synchronized(inf){ // wait until redCount hits 0
