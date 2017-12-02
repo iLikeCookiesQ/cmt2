@@ -77,11 +77,11 @@ public class Worker implements Runnable {
 			} else if (!pink.contains(t)) {
 				threadInfo.hashMapLock.lock();
 					inf = stateInfo.get(t);
-					if(!stateInfo.containsKey(t)){
+					/*if(!stateInfo.containsKey(t)){
 						if(DEBUG) System.out.println(threadName + " has a red search that found a null hashmap entry on node " + t.toString());
 						inf = new StateInfo();
 						stateInfo.put(t, inf);
-					}
+					}*/
 					isRed = inf.red;
 				threadInfo.hashMapLock.unlock();
 				if(!isRed){
@@ -99,7 +99,7 @@ public class Worker implements Runnable {
 				inf = stateInfo.get(s);
 				inf.redCount--;
 				localCount = inf.redCount;
-				stateInfo.put(s, inf);
+				//stateInfo.put(s, inf);
 				if(localCount == 0){
 					synchronized(inf){  // free all waiters
 						//if(DEBUG) System.out.println(threadName + " at State "
@@ -140,7 +140,7 @@ public class Worker implements Runnable {
 		threadInfo.hashMapLock.lock();
 			inf = stateInfo.get(s);
 			inf.red = true;
-			stateInfo.put(s, inf);
+			//stateInfo.put(s, inf);
 		threadInfo.hashMapLock.unlock();
 		// pink false
 		pink.remove(s);
@@ -187,10 +187,10 @@ public class Worker implements Runnable {
 				StateInfo inf = stateInfo.get(s);
 				if(!stateInfo.containsKey(s)){
 					inf = new StateInfo();
-					//stateInfo.put(s, inf);
+					stateInfo.put(s, inf);
 				} 
 				inf.redCount++;	
-				stateInfo.put(s, inf);
+				//stateInfo.put(s, inf);
 			threadInfo.hashMapLock.unlock();
 			dfsRed(s);
 		} 
