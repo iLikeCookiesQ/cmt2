@@ -52,14 +52,14 @@ public class Worker implements Runnable {
 			throw new InterruptedException();
 		}
 		StateInfo inf;
-		if(s.isAccepting()){
+		/*if(s.isAccepting()){
 			synchronized(stateInfo){
 				inf = stateInfo.get(s);
 				if(!stateInfo.containsKey(s)) inf = new StateInfo();
 				inf.redCount++;
 				stateInfo.put(s, inf);
 			}
-		}
+		}*/
 		pink.add(s);
 		boolean isRed;
 		for (State t : graph.post(s)) {
@@ -102,13 +102,15 @@ public class Worker implements Runnable {
 			if(localCount > 0){
 				synchronized(inf){
 					try{
-						if(DEBUG) System.out.println(threadName + 
-							" is waiting on redCount = " + localCount);
+						if(DEBUG) System.out.println(threadName + " at State "
+							+ s.toString() + " is waiting on redCount = " + localCount);
 						inf.wait();
 					} catch(InterruptedException e) {}
 				}
 			} else {
 				synchronized(inf){  // free all waiters
+					if(DEBUG) System.out.println(threadName + " at State "
+							+ s.toString() + "has notified all.");
 					inf.notifyAll();
 				}
 			} 
@@ -160,7 +162,7 @@ public class Worker implements Runnable {
 		}
 		//if(DEBUG) System.out.println(threadName + " has dealt with the children of node " + s.toString());
 		if (s.isAccepting()) {
-			/*synchronized(stateInfo){
+			synchronized(stateInfo){
 				StateInfo inf = stateInfo.get(s);
 				if(!stateInfo.containsKey(s)){
 					inf = new StateInfo();
@@ -168,7 +170,7 @@ public class Worker implements Runnable {
 				} 
 				inf.redCount++;	
 				stateInfo.put(s, inf);
-			}*/
+			}
 			dfsRed(s);
 		} 
 		colors.color(s, Color.BLUE);
