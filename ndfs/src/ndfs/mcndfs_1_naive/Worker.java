@@ -123,7 +123,7 @@ public class Worker implements Runnable {
 								+ s.toString() + " has been freed.");	
 						}
 					}	
-				}
+				
 			}
 		}
 		// shared red true
