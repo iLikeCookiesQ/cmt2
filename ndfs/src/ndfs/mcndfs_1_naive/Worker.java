@@ -105,12 +105,14 @@ public class Worker implements Runnable {
 						if(DEBUG) System.out.println(threadName + " at State "
 							+ s.toString() + " is waiting on redCount = " + localCount);
 						inf.wait();
+						if(DEBUG) System.out.println(threadName + " at State "
+							+ s.toString() + " has been freed.");
 					} catch(InterruptedException e) {}
 				}
 			} else {
 				synchronized(inf){  // free all waiters
-					if(DEBUG) System.out.println(threadName + " at State "
-							+ s.toString() + "has notified all.");
+					//if(DEBUG) System.out.println(threadName + " at State "
+							//+ s.toString() + "has notified all.");
 					inf.notifyAll();
 				}
 			} 
