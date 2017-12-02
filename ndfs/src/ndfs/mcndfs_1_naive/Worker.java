@@ -52,6 +52,12 @@ public class Worker implements Runnable {
 			throw new InterruptedException();
 		}
 		StateInfo inf;
+		synchronized(stateInfo){
+			inf = stateInfo.get(s);
+			if(!stateInfo.containsKey(s)) inf = new StateInfo();
+			inf.redCount++;
+			stateInfo.put(s, inf);
+		}
 		pink.add(s);
 		boolean isRed;
 		for (State t : graph.post(s)) {
@@ -158,7 +164,7 @@ public class Worker implements Runnable {
 		}
 		//if(DEBUG) System.out.println(threadName + " has dealt with the children of node " + s.toString());
 		if (s.isAccepting()) {
-			synchronized(stateInfo){
+			/*synchronized(stateInfo){
 				StateInfo inf = stateInfo.get(s);
 				if(!stateInfo.containsKey(s)){
 					inf = new StateInfo();
@@ -166,7 +172,7 @@ public class Worker implements Runnable {
 				} 
 				inf.redCount++;	
 				stateInfo.put(s, inf);
-			}
+			}*/
 			dfsRed(s);
 		} 
 		colors.color(s, Color.BLUE);
