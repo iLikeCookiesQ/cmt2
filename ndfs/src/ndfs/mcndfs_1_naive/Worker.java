@@ -125,8 +125,13 @@ public class Worker implements Runnable {
 					}	
 				
 			}*/
+			
 			synchronized(inf){
+				if(DEBUG) System.out.println(threadName + " at State "
+					+ s.toString() + " is waiting on redCount = " + inf.redCount);
 				while(inf.redCount != 0) inf.wait();
+				if(DEBUG) System.out.println(threadName + " at State "
+					+ s.toString() + " has been freed.");
 			}
 		}
 		// shared red true
