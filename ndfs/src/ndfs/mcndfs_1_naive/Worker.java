@@ -106,9 +106,6 @@ public class Worker implements Runnable {
 				}
 			}
 			while(localCount > 0){
-				synchronized(stateInfo){
-					localCount = stateInfo.get(s).redCount;
-				}
 				synchronized(inf){
 					try{
 						if(DEBUG) System.out.println(threadName + " at State "
@@ -117,6 +114,9 @@ public class Worker implements Runnable {
 						if(DEBUG) System.out.println(threadName + " at State "
 							+ s.toString() + " has been freed.");
 					} catch(InterruptedException e) {}
+				}
+				synchronized(stateInfo){
+					localCount = stateInfo.get(s).redCount;
 				}
 			}
 		}
