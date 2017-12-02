@@ -1,4 +1,6 @@
 package ndfs.mcndfs_1_naive;
+
+import java.util.concurrent.locks.ReentrantLock;
 import graph.State;
 //import java.lang.Thread;
 import java.io.File;
@@ -53,12 +55,12 @@ public class Worker implements Runnable {
 		}
 		StateInfo inf;
 		/*if(s.isAccepting()){
-			synchronized(stateInfo){
+			threadInfo.hashMapLock.lock();
 				inf = stateInfo.get(s);
 				if(!stateInfo.containsKey(s)) inf = new StateInfo();
 				inf.redCount++;
 				stateInfo.put(s, inf);
-			}
+			threadInfo.hashMapLock.unlock();
 		}*/
 		pink.add(s);
 		boolean isRed;
@@ -73,7 +75,7 @@ public class Worker implements Runnable {
 				return;
 
 			} else if (!pink.contains(t)) {
-				synchronized(stateInfo){
+				threadInfo.hashMapLock.lock();
 					inf = stateInfo.get(t);
 					if(!stateInfo.containsKey(t)){
 						if(DEBUG) System.out.println(threadName + " has a red search that found a null hashmap entry on node " + t.toString());
@@ -81,7 +83,7 @@ public class Worker implements Runnable {
 						stateInfo.put(t, inf);
 					}
 					isRed = inf.red;
-				}
+				threadInfo.hashMapLock.unlock();
 				if(!isRed){
 					dfsRed(t);
 				}
@@ -90,9 +92,10 @@ public class Worker implements Runnable {
 		// done with children
 		// decrement redCount and await it becoming 0 in the following block
 		int localCount;
+		boolean mustWait = false;
 		if(s.isAccepting()){
 		//if(true){
-			synchronized(stateInfo){
+			threadInfo.hashMapLock.lock();
 				inf = stateInfo.get(s);
 				inf.redCount--;
 				localCount = inf.redCount;
@@ -104,15 +107,7 @@ public class Worker implements Runnable {
 						inf.notifyAll();
 					}
 				}
-				if(DEBUG){
-					if(localCount < 0){
-						synchronized(stateInfo){
-							System.out.println(threadName + " at State "
-								+ s.toString() + " has found illegal redCount of " + localCount);
-						}
-					}
-				}
-			}
+			threadInfo.hashMapLock.unlock();
 			while(localCount > 0){			
 				try{
 					if(localCount > 0){	
@@ -125,17 +120,17 @@ public class Worker implements Runnable {
 						}
 					}	
 				} catch(InterruptedException e) {}
-				synchronized(stateInfo){
+				threadInfo.hashMapLock.lock();
 					localCount = stateInfo.get(s).redCount;
-				}
+				threadInfo.hashMapLock.unlock();
 			}
 		}
 		// shared red true
-		synchronized(stateInfo){
+		threadInfo.hashMapLock.lock();
 			inf = stateInfo.get(s);
 			inf.red = true;
 			stateInfo.put(s, inf);
-		}
+		threadInfo.hashMapLock.unlock();
 		// pink false
 		pink.remove(s);
 	}
@@ -161,14 +156,14 @@ public class Worker implements Runnable {
 				State currentChld = children[currentIdx];
 				StateInfo inf;
 				if(colors.hasColor(currentChld, Color.WHITE)){
-					synchronized(stateInfo){
+					threadInfo.hashMapLock.lock();
 						inf = stateInfo.get(currentChld);
 						if(!stateInfo.containsKey(currentChld)){
 							inf = new StateInfo();
 							stateInfo.put(currentChld, inf);
 						}
 						isRed = inf.red;
-					}
+					threadInfo.hashMapLock.unlock();
 					if(!isRed){
 						dfsBlue(currentChld);
 					}
@@ -177,7 +172,7 @@ public class Worker implements Runnable {
 		}
 		//if(DEBUG) System.out.println(threadName + " has dealt with the children of node " + s.toString());
 		if (s.isAccepting()) {
-			synchronized(stateInfo){
+			threadInfo.hashMapLock.lock();
 				StateInfo inf = stateInfo.get(s);
 				if(!stateInfo.containsKey(s)){
 					inf = new StateInfo();
@@ -185,7 +180,7 @@ public class Worker implements Runnable {
 				} 
 				inf.redCount++;	
 				stateInfo.put(s, inf);
-			}
+			threadInfo.hashMapLock.unlock();
 			dfsRed(s);
 		} 
 		colors.color(s, Color.BLUE);
