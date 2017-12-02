@@ -52,11 +52,13 @@ public class Worker implements Runnable {
 			throw new InterruptedException();
 		}
 		StateInfo inf;
-		synchronized(stateInfo){
-			inf = stateInfo.get(s);
-			if(!stateInfo.containsKey(s)) inf = new StateInfo();
-			inf.redCount++;
-			stateInfo.put(s, inf);
+		if(s.isAccepting()){
+			synchronized(stateInfo){
+				inf = stateInfo.get(s);
+				if(!stateInfo.containsKey(s)) inf = new StateInfo();
+				inf.redCount++;
+				stateInfo.put(s, inf);
+			}
 		}
 		pink.add(s);
 		boolean isRed;
@@ -89,6 +91,7 @@ public class Worker implements Runnable {
 		// decrement redCount and await it becoming 0 in the following block
 		int localCount;
 		if(s.isAccepting()){
+		//if(true){
 			synchronized(stateInfo){
 				// TODO: ask if synchronized locks onto pointer field, or pointer address
 				inf = stateInfo.get(s);
