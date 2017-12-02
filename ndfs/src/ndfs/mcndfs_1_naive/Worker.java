@@ -87,35 +87,29 @@ public class Worker implements Runnable {
 		}
 		// done with children
 		// decrement redCount and await it becoming 0 in the following block
+		int localCount;
 		if(s.isAccepting()){
-			boolean skip = false;
 			synchronized(stateInfo){
 				// TODO: ask if synchronized locks onto pointer field, or pointer address
 				inf = stateInfo.get(s);
-				inf.redCount--;
+				localCount = --inf.redCount;
 				stateInfo.put(s, inf);
-				if(inf.redCount == 0){
-					skip = true;
-					synchronized(inf){  // free all waiters
-						inf.notifyAll();
-					}
-				}
 			}
-			// No waiting needed if we already found that the redCount is 0 earlier. Save some hashmap accesses.
-			if(!skip){ 
-				synchronized(stateInfo){
-					inf = stateInfo.get(s);
-					synchronized(inf){ // wait until redCount hits 0
-						try{
-							while(inf.redCount > 0) {
-								if(DEBUG) System.out.println(threadName + 
-									" is waiting on redCount = " + inf.redCount);
-								inf.wait();
-							}
-						} catch(InterruptedException e) {}
-					}
+			if(localCount > 0){
+				synchronized(inf){
+					try{
+						while(inf.redCount > 0) {
+							if(DEBUG) System.out.println(threadName + 
+								" is waiting on redCount = " + inf.redCount);
+							inf.wait();
+						}
+					} catch(InterruptedException e) {}
 				}
-			}
+			} else {
+				synchronized(inf){  // free all waiters
+					inf.notifyAll();
+				}
+			} 
 		}
 		// shared red true
 		synchronized(stateInfo){
