@@ -104,22 +104,30 @@ public class Worker implements Runnable {
 						inf.notifyAll();
 					}
 				}
+				if(DEBUG){
+					if(localCount < 0){
+						synchronized(stateInfo){
+							System.out.println(threadName + " at State "
+								+ s.toString() + " has found illegal redCount of " + localCount);
+						}
+					}
+				}
 			}
 			while(localCount > 0){			
 				try{
-					synchronized(stateInfo){
-						localCount = stateInfo.get(s).redCount;
-					}
-					if(localCount > 0){
-						synchronized(inf){
-							if(DEBUG) System.out.println(threadName + " at State "
-							+ s.toString() + " is waiting on redCount = " + localCount);
-							inf.wait();
-							if(DEBUG) System.out.println(threadName + " at State "
-							+ s.toString() + " has been freed.");
-						}
+					synchronized(inf){
 						synchronized(stateInfo){
 							localCount = stateInfo.get(s).redCount;
+						}
+						if(localCount > 0){	
+							if(DEBUG) System.out.println(threadName + " at State "
+									+ s.toString() + " is waiting on redCount = " + localCount);
+							inf.wait();
+							if(DEBUG) System.out.println(threadName + " at State "
+									+ s.toString() + " has been freed.");
+							synchronized(stateInfo){
+								localCount = stateInfo.get(s).redCount;
+							}
 						}
 					}
 				} catch(InterruptedException e) {}
