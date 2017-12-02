@@ -108,7 +108,7 @@ public class Worker implements Runnable {
 					}
 				}
 			threadInfo.hashMapLock.unlock();
-			while(localCount > 0){			
+			/*while(localCount > 0){			
 					threadInfo.hashMapLock.lock();
 					localCount = stateInfo.get(s).redCount;
 					if(localCount > 0){	
@@ -124,6 +124,9 @@ public class Worker implements Runnable {
 						}
 					}	
 				
+			}*/
+			synchronized(inf){
+				while(inf.redCount != 0) inf.wait();
 			}
 		}
 		// shared red true
