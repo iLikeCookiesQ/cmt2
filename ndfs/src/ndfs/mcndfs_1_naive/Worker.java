@@ -113,10 +113,10 @@ public class Worker implements Runnable {
 						inf.wait();
 						if(DEBUG) System.out.println(threadName + " at State "
 							+ s.toString() + " has been freed.");
+						synchronized(stateInfo){
+							localCount = stateInfo.get(s).redCount;
+						}
 					} catch(InterruptedException e) {}
-				}
-				synchronized(stateInfo){
-					localCount = stateInfo.get(s).redCount;
 				}
 			}
 		}
