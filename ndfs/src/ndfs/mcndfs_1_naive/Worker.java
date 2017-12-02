@@ -101,7 +101,6 @@ public class Worker implements Runnable {
 				localCount = inf.redCount;
 				stateInfo.put(s, inf);
 				if(localCount == 0){
-					Thread.sleep(50);
 					synchronized(inf){  // free all waiters
 						//if(DEBUG) System.out.println(threadName + " at State "
 								//+ s.toString() + "has notified all.");
