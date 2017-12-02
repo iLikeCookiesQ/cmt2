@@ -92,17 +92,16 @@ public class Worker implements Runnable {
 			synchronized(stateInfo){
 				// TODO: ask if synchronized locks onto pointer field, or pointer address
 				inf = stateInfo.get(s);
-				localCount = --inf.redCount;
+				inf.redCount--;
+				localCount = inf.redCount;
 				stateInfo.put(s, inf);
 			}
 			if(localCount > 0){
 				synchronized(inf){
 					try{
-						while(inf.redCount > 0) {
-							if(DEBUG) System.out.println(threadName + 
-								" is waiting on redCount = " + inf.redCount);
-							inf.wait();
-						}
+						if(DEBUG) System.out.println(threadName + 
+							" is waiting on redCount = " + localCount);
+						inf.wait();
 					} catch(InterruptedException e) {}
 				}
 			} else {
