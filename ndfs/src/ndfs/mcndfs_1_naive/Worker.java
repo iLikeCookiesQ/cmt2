@@ -192,6 +192,7 @@ public class Worker implements Runnable {
 		//signal main thread that last worker has finished
 		synchronized(threadInfo.termination){
 			int i = threadInfo.finishedCount.incrementAndGet();
+			System.out.println(threadName + " has finished graph traversal and set finishedCount to " + i);
 			if(i == threadInfo.nWorker){
 				threadInfo.terminationResult = false;
 				threadInfo.isTerminationSet = true;
