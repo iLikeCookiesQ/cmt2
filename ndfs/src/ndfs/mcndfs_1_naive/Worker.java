@@ -109,20 +109,21 @@ public class Worker implements Runnable {
 				}
 			threadInfo.hashMapLock.unlock();
 			while(localCount > 0){			
-				try{
+					threadInfo.hashMapLock.lock();
+					localCount = stateInfo.get(s).redCount;
 					if(localCount > 0){	
 						synchronized(inf){
+							threadInfo.hashMapLock.unlock();
 							if(DEBUG) System.out.println(threadName + " at State "
 								+ s.toString() + " is waiting on redCount = " + localCount);
-							inf.wait();
+							try{
+								inf.wait();
+							} catch(InterruptedException e) {}
 							if(DEBUG) System.out.println(threadName + " at State "
 								+ s.toString() + " has been freed.");	
 						}
 					}	
-				} catch(InterruptedException e) {}
-				threadInfo.hashMapLock.lock();
-					localCount = stateInfo.get(s).redCount;
-				threadInfo.hashMapLock.unlock();
+				}
 			}
 		}
 		// shared red true
