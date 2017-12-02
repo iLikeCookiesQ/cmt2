@@ -1,5 +1,6 @@
 package ndfs.mcndfs_1_naive;
 
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import graph.State;
@@ -26,6 +27,7 @@ class ThreadInfo{
 	public MonitorObject termination;
 	public boolean[] sense;
 	public volatile AtomicInteger finishedCount;
+	public ReentrantLock hashMapLock;
 }
 
 class StateInfo{
@@ -66,6 +68,7 @@ public class NNDFS implements NDFS {
 	threadInfo.termination = new MonitorObject();
 	//threadInfo.sense = new boolean[nrWorker]; // TODO: initialize these
 	threadInfo.finishedCount = new AtomicInteger(0);
+	threadInfo.hashMapLock = new ReentrantLock();
 	stateInfo = new HashMap<State, StateInfo>();
 
         workers = new Worker[nrWorker];
