@@ -93,13 +93,22 @@ public class Worker implements Runnable {
 		if(s.isAccepting()){
 		//if(true){
 			synchronized(stateInfo){
-				// TODO: ask if synchronized locks onto pointer field, or pointer address
 				inf = stateInfo.get(s);
 				inf.redCount--;
 				localCount = inf.redCount;
 				stateInfo.put(s, inf);
+				if(localCount == 0){
+					synchronized(inf){  // free all waiters
+						//if(DEBUG) System.out.println(threadName + " at State "
+								//+ s.toString() + "has notified all.");
+						inf.notifyAll();
+					}
+				}
 			}
-			if(localCount > 0){
+			while(localCount > 0){
+				synchronized(stateInfo){
+					localCount = stateInfo.get(s).redCount;
+				}
 				synchronized(inf){
 					try{
 						if(DEBUG) System.out.println(threadName + " at State "
@@ -109,13 +118,7 @@ public class Worker implements Runnable {
 							+ s.toString() + " has been freed.");
 					} catch(InterruptedException e) {}
 				}
-			} else {
-				synchronized(inf){  // free all waiters
-					//if(DEBUG) System.out.println(threadName + " at State "
-							//+ s.toString() + "has notified all.");
-					inf.notifyAll();
-				}
-			} 
+			}
 		}
 		// shared red true
 		synchronized(stateInfo){
