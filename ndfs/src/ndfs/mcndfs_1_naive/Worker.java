@@ -91,19 +91,18 @@ public class Worker implements Runnable {
 		}
 		// done with children
 		// decrement redCount and await it becoming 0 in the following block
-		int localCount;
+		//int localCount;
 		boolean mustWait = false;
 		if(s.isAccepting()){
 		//if(true){
 			threadInfo.hashMapLock.lock();
 				inf = stateInfo.get(s);
-				inf.redCount--;
-				localCount = inf.redCount;
-				//stateInfo.put(s, inf);
-				if(localCount == 0){
-					synchronized(inf){  // free all waiters
+				synchronized(inf){
+					inf.redCount--;
+					//stateInfo.put(s, inf);
+					if(inf.redCount == 0){// free all waiters
 						//if(DEBUG) System.out.println(threadName + " at State "
-								//+ s.toString() + "has notified all.");
+							//+ s.toString() + "has notified all.");
 						inf.notifyAll();
 					}
 				}
