@@ -63,29 +63,38 @@ public class Worker implements Runnable {
 			threadInfo.hashMapLock.unlock();
 		}*/
 		pink.add(s);
-		boolean isRed;
-		for (State t : graph.post(s)) {
-			if (colors.hasColor(t, Color.CYAN)) {
-				// signal main thread of cycle found
-				synchronized(threadInfo.termination){
-					threadInfo.terminationResult = true;
-					threadInfo.isTerminationSet = true;
-					threadInfo.termination.notify();
-				}
-				return;
-
-			} else if (!pink.contains(t)) {
-				threadInfo.hashMapLock.lock();
-					inf = stateInfo.get(t);
-					/*if(!stateInfo.containsKey(t)){
-						if(DEBUG) System.out.println(threadName + " has a red search that found a null hashmap entry on node " + t.toString());
-						inf = new StateInfo();
-						stateInfo.put(t, inf);
-					}*/
-					isRed = inf.red;
-				threadInfo.hashMapLock.unlock();
-				if(!isRed){
-					dfsRed(t);
+		List<State> list = graph.post(s);
+		int childCount = list.size();
+		if(childCOunt != 0){
+			State[] children = list.toArray(new State[childCount]);
+			int firstChildIdx = ThreadLocalRandom.current().nextInt(childCount);
+			boolean isRed;
+			for (int i = 0; i < childCount; i++) {
+				int currentIdx = (firstChildIdx + i)%childCount;
+				State currentChld = children[currentIdx];
+				if (colors.hasColor(currentChld, Color.CYAN)) {
+					// signal main thread of cycle found
+					synchronized(threadInfo.termination){
+						threadInfo.terminationResult = true;
+						threadInfo.isTerminationSet = true;
+						threadInfo.termination.notify();
+					}
+					return;
+		
+				} else if (!pink.contains(currentChld)) {
+					threadInfo.hashMapLock.lock();
+						inf = stateInfo.get(currentChld);
+						/*if(!stateInfo.containsKey(currentChld)){
+							if(DEBUG) System.out.println(threadName + 
+								" has a red search that found a null hashmap entry on node " + currentChld.toString());
+							inf = new StateInfo();
+							stateInfo.put(currentChld, inf);
+						}*/
+						isRed = inf.red;
+					threadInfo.hashMapLock.unlock();
+					if(!isRed){
+						dfsRed(currentChld);
+					}
 				}
 			}
 		}
