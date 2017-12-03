@@ -65,7 +65,7 @@ public class Worker implements Runnable {
 		pink.add(s);
 		List<State> list = graph.post(s);
 		int childCount = list.size();
-		if(childCOunt != 0){
+		if(childCount != 0){
 			State[] children = list.toArray(new State[childCount]);
 			int firstChildIdx = ThreadLocalRandom.current().nextInt(childCount);
 			boolean isRed;
