@@ -99,7 +99,7 @@ public class Worker implements Runnable {
 				inf = stateInfo.get(s);
 				synchronized(inf){
 					inf.redCount--;
-					//stateInfo.put(s, inf);
+					stateInfo.put(s, inf);
 					if(inf.redCount == 0){// free all waiters
 						//if(DEBUG) System.out.println(threadName + " at State "
 							//+ s.toString() + "has notified all.");
@@ -139,7 +139,7 @@ public class Worker implements Runnable {
 		threadInfo.hashMapLock.lock();
 			inf = stateInfo.get(s);
 			inf.red = true;
-			//stateInfo.put(s, inf);
+			stateInfo.put(s, inf);
 		threadInfo.hashMapLock.unlock();
 		// pink false
 		pink.remove(s);
@@ -189,7 +189,7 @@ public class Worker implements Runnable {
 					stateInfo.put(s, inf);
 				} 
 				inf.redCount++;	
-				//stateInfo.put(s, inf);
+				stateInfo.put(s, inf);
 			threadInfo.hashMapLock.unlock();
 			dfsRed(s);
 		} 
