@@ -198,6 +198,9 @@ public class Worker implements Runnable {
 		if(allRed){
 			threadInfo.hashMapLock.lock();
 				inf = stateInfo.get(s);
+				if(!stateInfo.containsKey(s)){
+					inf = new StateInfo();
+				}
 				inf.red = true;
 				stateInfo.put(s, inf);
 			threadInfo.hashMapLock.unlock();
