@@ -157,6 +157,8 @@ public class Worker implements Runnable {
 		if(Thread.interrupted()){
 			throw new InterruptedException();
 		}
+		StateInfo inf;
+		boolean allRed = true;
 		colors.color(s, Color.CYAN);
 
 		// randomly choose a child to begin recursive calls.
@@ -172,7 +174,6 @@ public class Worker implements Runnable {
 			for(int i = 0; i < childCount; i++){
 				int currentIdx = (firstChildIdx + i)%childCount;
 				State currentChld = children[currentIdx];
-				StateInfo inf;
 				if(colors.hasColor(currentChld, Color.WHITE)){
 					threadInfo.hashMapLock.lock();
 						inf = stateInfo.get(currentChld);
@@ -185,11 +186,22 @@ public class Worker implements Runnable {
 					if(!isRed){
 						dfsBlue(currentChld);
 					}
+					threadInfo.hashMapLock.lock();
+						inf = stateInfo.get(currentChld);
+						isRed = inf.red;
+					threadInfo.hashMapLock.unlock();
+					if(!isRed) allRed = false;
 				}
 			}
 		}
 		//if(DEBUG) System.out.println(threadName + " has dealt with the children of node " + s.toString());
-		if (s.isAccepting()) {
+		if(allRed){
+			threadInfo.hashMapLock.lock();
+				inf = stateInfo.get(s);
+				inf.red = true;
+				stateInfo.put(s, inf);
+			threadInfo.hasMapLock.unlock();
+		} else if (s.isAccepting()) {
 			threadInfo.hashMapLock.lock();
 				StateInfo inf = stateInfo.get(s);
 				if(!stateInfo.containsKey(s)){
