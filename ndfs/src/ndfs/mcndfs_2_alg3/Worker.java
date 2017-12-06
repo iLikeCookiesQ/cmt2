@@ -1,4 +1,4 @@
-package ndfs.mcndfs_1_naive;
+package ndfs.mcndfs_2_alg3;
 
 import java.util.concurrent.locks.ReentrantLock;
 import graph.State;
@@ -16,16 +16,15 @@ import graph.GraphFactory;
 //import NNDFS.ThreadInfo;
 
 /**
- * This is a straightforward implementation of Figure 1 of
+ * This is a straightforward implementation of Algorithm 3 of
  * <a href="http://www.cs.vu.nl/~tcs/cm/ndfs/laarman.pdf"> "the Laarman
  * paper"</a>.
  */
-//TODO: data structure for pink? no longer use the local red.
 public class Worker implements Runnable {
 	static final boolean DEBUG = false;
 	String threadName;
 	public HashMap<State, StateInfo> stateInfo;
-	private HashSet<State> pink;
+	//private HashSet<State> pink;
 	private final Graph graph;
 	private final Colors colors = new Colors();
 	public ThreadInfo threadInfo;
@@ -46,7 +45,7 @@ public class Worker implements Runnable {
 		threadInfo = threaddInfo;
 		graph = GraphFactory.createGraph(threaddInfo.pFile);
 		stateInfo = x;
-		pink = new HashSet<State>();
+		//pink = new HashSet<State>();
 	}
 
 	private void dfsRed(State s) throws InterruptedException {
@@ -62,7 +61,7 @@ public class Worker implements Runnable {
 				stateInfo.put(s, inf);
 			threadInfo.hashMapLock.unlock();
 		}*/
-		pink.add(s);
+		colors.color(s, Color.PINK);
 		List<State> list = graph.post(s);
 		int childCount = list.size();
 		if(childCount != 0){
@@ -81,7 +80,7 @@ public class Worker implements Runnable {
 					}
 					return;
 		
-				} else if (!pink.contains(currentChld)) {
+				} else if (!colors.hasColor(currentChld, Color.PINK)) {
 					threadInfo.hashMapLock.lock();
 						inf = stateInfo.get(currentChld);
 						/*if(!stateInfo.containsKey(currentChld)){
@@ -151,7 +150,7 @@ public class Worker implements Runnable {
 			stateInfo.put(s, inf);
 		threadInfo.hashMapLock.unlock();
 		// pink false
-		pink.remove(s);
+		// pink.remove(s);
 	}
 
 	private void dfsBlue(State s) throws InterruptedException {
@@ -226,8 +225,4 @@ public class Worker implements Runnable {
 			nndfs(graph.getInitialState());
 		} catch (InterruptedException e){}
 	}
-
-    /*OLDCODE:public boolean getResult() {
-        return result;
-    }*/
 }
