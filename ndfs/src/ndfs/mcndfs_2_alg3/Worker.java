@@ -200,10 +200,10 @@ public class Worker implements Runnable {
 				inf = stateInfo.get(s);
 				inf.red = true;
 				stateInfo.put(s, inf);
-			threadInfo.hasMapLock.unlock();
+			threadInfo.hashMapLock.unlock();
 		} else if (s.isAccepting()) {
 			threadInfo.hashMapLock.lock();
-				StateInfo inf = stateInfo.get(s);
+				inf = stateInfo.get(s);
 				if(!stateInfo.containsKey(s)){
 					inf = new StateInfo();
 					stateInfo.put(s, inf);
