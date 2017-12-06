@@ -174,6 +174,19 @@ public class Worker implements Runnable {
 			for(int i = 0; i < childCount; i++){
 				int currentIdx = (firstChildIdx + i)%childCount;
 				State currentChld = children[currentIdx];
+				// early cycle detection
+				if(colors.hasColor(currentChld, Color.CYAN)){
+					if(s.isAccepting() || currentChld.isAccepting()){
+						// signal main thread of cycle found
+						synchronized(threadInfo.termination){
+							threadInfo.terminationResult = true;
+							threadInfo.isTerminationSet = true;
+							threadInfo.termination.notify();
+						}
+						return;
+					}
+				}
+				// end early cycle detection
 				if(colors.hasColor(currentChld, Color.WHITE)){
 					threadInfo.hashMapLock.lock();
 						inf = stateInfo.get(currentChld);
