@@ -186,12 +186,11 @@ public class Worker implements Runnable {
 					if(!isRed){
 						dfsBlue(currentChld);
 					}
-					threadInfo.hashMapLock.lock();
-						inf = stateInfo.get(currentChld);
-						isRed = inf.red;
-					threadInfo.hashMapLock.unlock();
-					if(!isRed) allRed = false;
 				}
+				threadInfo.hashMapLock.lock();
+					inf = stateInfo.get(currentChld);
+					if(!inf.red) allRed = false;
+				threadInfo.hashMapLock.unlock();
 			}
 		}
 		//if(DEBUG) System.out.println(threadName + " has dealt with the children of node " + s.toString());
