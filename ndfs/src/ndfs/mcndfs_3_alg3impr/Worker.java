@@ -70,7 +70,7 @@ public class Worker implements Runnable {
 			State[] children = list.toArray(new State[childCount]);
 			/*if(!stateInfo.containsKey(s)){
 				inf = new StateInfo();
-				stateInfo.put(s);
+				stateInfo.put(s, inf);
 			}*/
 			threadInfo.hashMapLock.lock();
 				int firstChildIdx = stateInfo.get(s).permutationRed.getAndIncrement();
@@ -177,7 +177,7 @@ public class Worker implements Runnable {
 			threadInfo.hashMapLock.lock();
 				if(!stateInfo.containsKey(s)){
 					inf = new StateInfo();
-					stateInfo.put(s);
+					stateInfo.put(s, inf);
 				}
 				int firstChildIdx = stateInfo.get(s).permutationRed.getAndIncrement();
 			threadInfo.hashMapLock.unlock();
