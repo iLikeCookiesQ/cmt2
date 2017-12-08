@@ -177,12 +177,12 @@ public class Worker implements Runnable {
 		if(childCount != 0){
 			State[] children = list.toArray(new State[childCount]);
 			threadInfo.hashMapLock.lock();
+				inf = stateInfo.get(s);
 				if(!stateInfo.containsKey(s)){
 					inf = new StateInfo();
 					//stateInfo.put(s, inf);
 				}
-				inf = stateInfo.get(s);
-				int firstChildIdx = inf.permutationRed.getAndIncrement();
+				int firstChildIdx = inf.permutationBlue.getAndIncrement();
 				stateInfo.put(s, inf);
 			threadInfo.hashMapLock.unlock();
 			boolean isRed;
