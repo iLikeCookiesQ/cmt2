@@ -28,6 +28,7 @@ class ThreadInfo{
 	public boolean[] sense;
 	public volatile AtomicInteger finishedCount;
 	public ReentrantLock hashMapLock;
+	public volatile AtomicInteger improvisedThreadId;
 }
 
 class StateInfo{
@@ -69,6 +70,7 @@ public class NNDFS implements NDFS {
 	//threadInfo.sense = new boolean[nrWorker]; // TODO: initialize these
 	threadInfo.finishedCount = new AtomicInteger(0);
 	threadInfo.hashMapLock = new ReentrantLock();
+	threadInfo.improvisedThreadId = new AtomicInteger(0);
 	stateInfo = new HashMap<State, StateInfo>();
 
         workers = new Worker[nrWorker];

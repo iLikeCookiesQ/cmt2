@@ -46,7 +46,7 @@ public class Worker implements Runnable {
 		threadInfo = threaddInfo;
 		graph = GraphFactory.createGraph(threaddInfo.pFile);
 		stateInfo = x;
-		threadNo = ThreadId.get();
+		threadNo = threadInfo.improvisedThreadId.getAndIncrement();
 		//pink = new HashSet<State>();
 	}
 
@@ -239,7 +239,8 @@ public class Worker implements Runnable {
 		//signal main thread that last worker has finished
 		synchronized(threadInfo.termination){
 			int i = threadInfo.finishedCount.incrementAndGet();
-			if(DEBUG) System.out.println(threadName + " has finished graph traversal and set finishedCount to " + i);
+			if(DEBUG) System.out.println(threadName + "with threadNo: " + threadNo  + 
+				" has finished graph traversal and set finishedCount to " + i);
 			if(i == threadInfo.nWorker){
 				threadInfo.terminationResult = false;
 				threadInfo.isTerminationSet = true;
