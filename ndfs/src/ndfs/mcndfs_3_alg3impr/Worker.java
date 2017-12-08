@@ -73,7 +73,8 @@ public class Worker implements Runnable {
 				stateInfo.put(s, inf);
 			}*/
 			threadInfo.hashMapLock.lock();
-				int firstChildIdx = stateInfo.get(s).permutationRed.getAndIncrement();
+				inf = stateInfo.get(s);
+				int firstChildIdx = inf.permutationRed.getAndIncrement();
 				stateInfo.put(s, inf);
 			threadInfo.hashMapLock.unlock();
 			boolean isRed;
@@ -180,7 +181,8 @@ public class Worker implements Runnable {
 					inf = new StateInfo();
 					//stateInfo.put(s, inf);
 				}
-				int firstChildIdx = stateInfo.get(s).permutationRed.getAndIncrement();
+				inf = stateInfo.get(s);
+				int firstChildIdx = inf.permutationRed.getAndIncrement();
 				stateInfo.put(s, inf);
 			threadInfo.hashMapLock.unlock();
 			boolean isRed;
