@@ -74,6 +74,7 @@ public class Worker implements Runnable {
 			}*/
 			threadInfo.hashMapLock.lock();
 				int firstChildIdx = stateInfo.get(s).permutationRed.getAndIncrement();
+				stateInfo.put(s, inf);
 			threadInfo.hashMapLock.unlock();
 			boolean isRed;
 			for (int i = 0; i < childCount; i++) {
@@ -177,9 +178,10 @@ public class Worker implements Runnable {
 			threadInfo.hashMapLock.lock();
 				if(!stateInfo.containsKey(s)){
 					inf = new StateInfo();
-					stateInfo.put(s, inf);
+					//stateInfo.put(s, inf);
 				}
 				int firstChildIdx = stateInfo.get(s).permutationRed.getAndIncrement();
+				stateInfo.put(s, inf);
 			threadInfo.hashMapLock.unlock();
 			boolean isRed;
 			for(int i = 0; i < childCount; i++){
