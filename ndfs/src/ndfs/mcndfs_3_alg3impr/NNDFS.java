@@ -26,9 +26,9 @@ class ThreadInfo{
 	public volatile boolean terminationResult;
 	public MonitorObject termination;
 	public boolean[] sense;
-	public volatile AtomicInteger finishedCount;
+	public  AtomicInteger finishedCount;
 	public ReentrantLock hashMapLock;
-	public volatile AtomicInteger improvisedThreadId;
+	public  AtomicInteger improvisedThreadId;
 }
 
 class StateInfo{
