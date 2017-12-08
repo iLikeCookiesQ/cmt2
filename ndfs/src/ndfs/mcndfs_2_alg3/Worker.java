@@ -21,7 +21,7 @@ import graph.GraphFactory;
  * paper"</a>.
  */
 public class Worker implements Runnable {
-	static final boolean DEBUG = false;
+	static final boolean DEBUG = true;
 	String threadName;
 	public HashMap<State, StateInfo> stateInfo;
 	//private HashSet<State> pink;

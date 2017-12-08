@@ -102,7 +102,6 @@ public class Worker implements Runnable {
 		// done with children
 		// decrement redCount and await it becoming 0 in the following block
 		//int localCount;
-		boolean mustWait = false;
 		if(s.isAccepting()){
 		//if(true){
 			threadInfo.hashMapLock.lock();
