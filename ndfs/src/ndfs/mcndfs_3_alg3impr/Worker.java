@@ -23,7 +23,7 @@ import graph.GraphFactory;
 public class Worker implements Runnable {
 	static final boolean DEBUG = true;
 	String threadName;
-	int threadNo;
+	int threadNo; // this is used to make workers explore diffent children of a node first in a nonrandom way
 	public HashMap<State, StateInfo> stateInfo;
 	//private HashSet<State> pink;
 	private final Graph graph;
@@ -68,10 +68,10 @@ public class Worker implements Runnable {
 		int childCount = list.size();
 		if(childCount != 0){
 			State[] children = list.toArray(new State[childCount]);
-			int firstChildIdx = ThreadLocalRandom.current().nextInt(childCount);
+			//int firstChildIdx = ThreadLocalRandom.current().nextInt(childCount);
 			boolean isRed;
 			for (int i = 0; i < childCount; i++) {
-				int currentIdx = (firstChildIdx + i)%childCount;
+				int currentIdx = (threadNo + i)%childCount;
 				State currentChld = children[currentIdx];
 				if (colors.hasColor(currentChld, Color.CYAN)) {
 					// signal main thread of cycle found
@@ -171,10 +171,10 @@ public class Worker implements Runnable {
 			State[] children = list.toArray(new State[childCount]);
 
 			//System.out.println("Child Count " + childCount + " with thread " + threadName);
-			int firstChildIdx = ThreadLocalRandom.current().nextInt(childCount);
+			//int firstChildIdx = ThreadLocalRandom.current().nextInt(childCount);
 			boolean isRed;
 			for(int i = 0; i < childCount; i++){
-				int currentIdx = (firstChildIdx + i)%childCount;
+				int currentIdx = (threadNo + i)%childCount;
 				State currentChld = children[currentIdx];
 				// early cycle detection
 				if(colors.hasColor(currentChld, Color.CYAN)){
@@ -239,7 +239,7 @@ public class Worker implements Runnable {
 		//signal main thread that last worker has finished
 		synchronized(threadInfo.termination){
 			int i = threadInfo.finishedCount.incrementAndGet();
-			if(DEBUG) System.out.println(threadName + "with threadNo: " + threadNo  + 
+			if(DEBUG) System.out.println(threadName + " with threadNo: " + threadNo  + 
 				" has finished graph traversal and set finishedCount to " + i);
 			if(i == threadInfo.nWorker){
 				threadInfo.terminationResult = false;
