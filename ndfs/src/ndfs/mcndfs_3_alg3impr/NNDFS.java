@@ -34,14 +34,20 @@ class ThreadInfo{
 class StateInfo{
 	boolean red;
 	int redCount;
+	AtomicInteger permutationBlue;
+	AtomicInteger permutationRed;
 
 	StateInfo(){
 		red = false;
 		redCount = 0;
+		permutationBlue = new AtomicInteger(0);
+		permutationRed = new AtomicInteger(0);
 	}
 	StateInfo(boolean b, int i){
 		red = b;
 		redCount = i;
+		permutationBlue = new AtomicInteger(0);
+		permutationRed = new AtomicInteger(0);
 	}
 }
 

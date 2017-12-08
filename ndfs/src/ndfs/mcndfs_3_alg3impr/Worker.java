@@ -68,10 +68,16 @@ public class Worker implements Runnable {
 		int childCount = list.size();
 		if(childCount != 0){
 			State[] children = list.toArray(new State[childCount]);
-			//int firstChildIdx = ThreadLocalRandom.current().nextInt(childCount);
+			/*if(!stateInfo.containsKey(s)){
+				inf = new StateInfo();
+				stateInfo.put(s);
+			}*/
+			threadInfo.hashMapLock.lock();
+				int firstChildIdx = stateInfo.get(s).permutationRed.getAndIncrement();
+			threadInfo.hashMapLock.unlock();
 			boolean isRed;
 			for (int i = 0; i < childCount; i++) {
-				int currentIdx = (threadNo + i)%childCount;
+				int currentIdx = (firstChildIdx + i)%childCount;
 				State currentChld = children[currentIdx];
 				if (colors.hasColor(currentChld, Color.CYAN)) {
 					// signal main thread of cycle found
@@ -168,9 +174,13 @@ public class Worker implements Runnable {
 		int childCount = list.size();
 		if(childCount != 0){
 			State[] children = list.toArray(new State[childCount]);
-
-			//System.out.println("Child Count " + childCount + " with thread " + threadName);
-			//int firstChildIdx = ThreadLocalRandom.current().nextInt(childCount);
+			threadInfo.hashMapLock.lock();
+				if(!stateInfo.containsKey(s)){
+					inf = new StateInfo();
+					stateInfo.put(s);
+				}
+				int firstChildIdx = stateInfo.get(s).permutationRed.getAndIncrement();
+			threadInfo.hashMapLock.unlock();
 			boolean isRed;
 			for(int i = 0; i < childCount; i++){
 				int currentIdx = (threadNo + i)%childCount;
