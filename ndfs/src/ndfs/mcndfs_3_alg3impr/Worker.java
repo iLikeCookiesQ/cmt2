@@ -21,8 +21,9 @@ import graph.GraphFactory;
  * paper"</a>.
  */
 public class Worker implements Runnable {
-	static final boolean DEBUG = false;
+	static final boolean DEBUG = true;
 	String threadName;
+	int threadNo;
 	public HashMap<State, StateInfo> stateInfo;
 	//private HashSet<State> pink;
 	private final Graph graph;
@@ -45,6 +46,7 @@ public class Worker implements Runnable {
 		threadInfo = threaddInfo;
 		graph = GraphFactory.createGraph(threaddInfo.pFile);
 		stateInfo = x;
+		threadNo = ThreadId.get();
 		//pink = new HashSet<State>();
 	}
 
@@ -206,7 +208,7 @@ public class Worker implements Runnable {
 				threadInfo.hashMapLock.unlock();
 			}
 		}
-		//if(DEBUG) System.out.println(threadName + " has dealt with the children of node " + s.toString());
+		//if(DEBUG) System.out.println("Thread " + threadNo + " has dealt with the children of node " + s.toString());
 		if(allRed){
 			threadInfo.hashMapLock.lock();
 				inf = stateInfo.get(s);
