@@ -22,13 +22,12 @@ import graph.GraphFactory;
  */
 public class Worker implements Runnable {
 	static final boolean DEBUG = true;
-	String threadName;
-	int threadNo; // this is used to make workers explore diffent children of a node first in a nonrandom way
-	public HashMap<State, StateInfo> stateInfo;
-	//private HashSet<State> pink;
+	String threadName; // used for debugging
+	int threadNo; // this is sometimes used to make workers explore diffent children of a node first in a nonrandom way
+	public HashMap<State, StateInfo> stateInfo; // the hashmap storing all per state information 
 	private final Graph graph;
 	private final Colors colors = new Colors();
-	public ThreadInfo threadInfo;
+	public ThreadInfo threadInfo; // 
 
 	// Throwing an exception is a convenient way to cut off the search in case a
 	// cycle is found.
@@ -166,7 +165,7 @@ public class Worker implements Runnable {
 		if(Thread.interrupted()){
 			throw new InterruptedException();
 		}
-		StateInfo inf;
+		StateInfo inf; // auxiliary variable to reduce garbage collection overhead
 		boolean allRed = true;
 		colors.color(s, Color.CYAN);
 
@@ -175,19 +174,23 @@ public class Worker implements Runnable {
 		List<State> list = graph.post(s);
 		int childCount = list.size();
 		if(childCount != 0){
+			int firstChildIdx;
 			State[] children = list.toArray(new State[childCount]);
-			threadInfo.hashMapLock.lock();
-				inf = stateInfo.get(s);
-				if(!stateInfo.containsKey(s)){
-					inf = new StateInfo();
-					//stateInfo.put(s, inf);
-				}
-				int firstChildIdx = inf.permutationBlue.getAndIncrement();
-				stateInfo.put(s, inf);
-			threadInfo.hashMapLock.unlock();
+
+			// if the current node isn't in the hashmap, set firstChldIdx to threadNo.
+			// this saves some locking.
+			if(!stateInfo.containsKey(s)){
+				firstChildIdx = threadNo;
+			} else {
+				threadInfo.hashMapLock.lock();
+					inf = stateInfo.get(s);
+					firstChildIdx = inf.permutationBlue.getAndIncrement();
+					stateInfo.put(s, inf);
+				threadInfo.hashMapLock.unlock();
+			}
 			boolean isRed;
 			for(int i = 0; i < childCount; i++){
-				int currentIdx = (threadNo + i)%childCount;
+				int currentIdx = (firstChildIdx + i)%childCount;
 				State currentChld = children[currentIdx];
 				// early cycle detection
 				if(colors.hasColor(currentChld, Color.CYAN)){
@@ -200,8 +203,7 @@ public class Worker implements Runnable {
 						}
 						return;
 					}
-				}
-				// end early cycle detection
+				} // end early cycle detection
 				if(colors.hasColor(currentChld, Color.WHITE)){
 					threadInfo.hashMapLock.lock();
 						inf = stateInfo.get(currentChld);
