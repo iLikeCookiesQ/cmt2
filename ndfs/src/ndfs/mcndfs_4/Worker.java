@@ -80,7 +80,7 @@ public class Worker implements Runnable {
 					return;
 		
 				} else if (!colors.hasColor(currentChld, Color.PINK)) {
-					if(!stateInfo.get(currentChld).red;){
+					if(!stateInfo.get(currentChld).red){
 						dfsRed(currentChld);
 					}
 				}
