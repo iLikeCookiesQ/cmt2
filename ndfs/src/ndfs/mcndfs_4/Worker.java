@@ -173,7 +173,7 @@ public class Worker implements Runnable {
 						dfsBlue(currentChld);
 					}
 				}
-				//threadInfo.hashMapLock.lock();
+				//threadInfo.hashMapLock.lock(); the following 4 lines are commented because allRed checks are moved outside of this loop
 					//inf = stateInfo.get(currentChld);
 					//if(!stateInfo.get(currentChld).red) allRed = false;
 				//threadInfo.hashMapLock.unlock();

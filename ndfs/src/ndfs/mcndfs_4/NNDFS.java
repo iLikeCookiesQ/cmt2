@@ -39,13 +39,13 @@ class StateInfo{
 
 	StateInfo(){
 		red = false;
-		redCount = 0;
+		redCount.set(0);
 		permutationBlue = new AtomicInteger(0);
 		permutationRed = new AtomicInteger(0);
 	}
 	StateInfo(boolean b, int i){
 		red = b;
-		redCount = i;
+		redCount.set(i);
 		permutationBlue = new AtomicInteger(0);
 		permutationRed = new AtomicInteger(0);
 	}
@@ -77,7 +77,7 @@ public class NNDFS implements NDFS {
 	threadInfo.finishedCount = new AtomicInteger(0);
 	threadInfo.hashMapLock = new ReentrantLock();
 	threadInfo.improvisedThreadId = new AtomicInteger(0);
-	stateInfo = new ConcurrentHashMap<State, StateInfo>(16, 0.75, nrWorker);
+	stateInfo = new ConcurrentHashMap<State, StateInfo>(16, (float) 0.75, nrWorker);
 
         workers = new Worker[nrWorker];
 	threads = new Thread[nrWorker];
