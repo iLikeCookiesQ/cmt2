@@ -39,13 +39,13 @@ class StateInfo{
 
 	StateInfo(){
 		red = false;
-		redCount.set(0);
+		redCount = new AtomicInteger(0);
 		permutationBlue = new AtomicInteger(0);
 		permutationRed = new AtomicInteger(0);
 	}
 	StateInfo(boolean b, int i){
 		red = b;
-		redCount.set(i);
+		redCount = new AtomicInteger(i);
 		permutationBlue = new AtomicInteger(0);
 		permutationRed = new AtomicInteger(0);
 	}
