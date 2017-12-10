@@ -21,7 +21,7 @@ import graph.GraphFactory;
  * paper"</a>.
  */
 public class Worker implements Runnable {
-	static final boolean DEBUG = true;
+	static final boolean DEBUG = false;
 	String threadName; // used for debugging
 	int threadNo; // this is sometimes used to make workers explore diffent children of a node first in a nonrandom way
 	public ConcurrentHashMap<State, StateInfo> stateInfo; // the hashmap storing all per state information 
