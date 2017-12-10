@@ -54,14 +54,6 @@ public class Worker implements Runnable {
 			throw new InterruptedException();
 		}
 		StateInfo inf;
-		/*if(s.isAccepting()){
-			threadInfo.hashMapLock.lock();
-				inf = stateInfo.get(s);
-				if(!stateInfo.containsKey(s)) inf = new StateInfo();
-				inf.redCount++;
-				stateInfo.put(s, inf);
-			threadInfo.hashMapLock.unlock();
-		}*/
 		colors.color(s, Color.PINK);
 		List<State> list = graph.post(s);
 		int childCount = list.size();
@@ -174,7 +166,7 @@ public class Worker implements Runnable {
 		List<State> list = graph.post(s);
 		int childCount = list.size();
 		if(childCount != 0){
-			int firstChildIdx;
+			int firstChildIdx; // used to send threads in a different direction in the graph
 			State[] children = list.toArray(new State[childCount]);
 
 			// if the current node isn't in the hashmap, set firstChldIdx to threadNo.
