@@ -59,10 +59,6 @@ public class Worker implements Runnable {
 		int childCount = list.size();
 		if(childCount != 0){
 			State[] children = list.toArray(new State[childCount]);
-			/*if(!stateInfo.containsKey(s)){
-				inf = new StateInfo();
-				stateInfo.put(s, inf);
-			}*/
 			//threadInfo.hashMapLock.lock();
 				int firstChildIdx = stateInfo.get(s).permutationRed.getAndIncrement();
 			//threadInfo.hashMapLock.unlock();
@@ -126,8 +122,6 @@ public class Worker implements Runnable {
 		boolean allRed = true;
 		colors.color(s, Color.CYAN);
 
-		// randomly choose a child to begin recursive calls.
-		// access remainder of children in order.
 		List<State> list = graph.post(s);
 		int childCount = list.size();
 		if(childCount != 0){
@@ -138,7 +132,7 @@ public class Worker implements Runnable {
 			// this saves some locking.
 			if(!stateInfo.containsKey(s)){
 				firstChildIdx = threadNo;
-			} else {
+			} else {// obtain unique firstChldIdx from permutationBlue
 				//threadInfo.hashMapLock.lock();
 					firstChildIdx = stateInfo.get(s).permutationBlue.getAndIncrement();
 				//threadInfo.hashMapLock.unlock();
@@ -188,14 +182,6 @@ public class Worker implements Runnable {
 		
 		//if(DEBUG) System.out.println("Thread " + threadNo + " has dealt with the children of node " + s.toString());
 		if(allRed){
-			/*threadInfo.hashMapLock.lock();
-				inf = stateInfo.get(s);
-				if(!stateInfo.containsKey(s)){
-					inf = new StateInfo();
-				}
-				inf.red = true;
-				stateInfo.put(s, inf);
-			threadInfo.hashMapLock.unlock();*/
 			if(!stateInfo.containsKey(s)){ // lock the hashmap in case key isn't present
 				threadInfo.hashMapLock.lock();
 					if(!stateInfo.containsKey(s)){
@@ -205,15 +191,6 @@ public class Worker implements Runnable {
 			} 
 			stateInfo.get(s).red = true;
 		} else if (s.isAccepting()) {
-			/*threadInfo.hashMapLock.lock();
-				inf = stateInfo.get(s);
-				if(!stateInfo.containsKey(s)){
-					inf = new StateInfo();
-					stateInfo.put(s, inf);
-				} 
-				inf.redCount++;	
-				stateInfo.put(s, inf);
-			threadInfo.hashMapLock.unlock();*/
 			if(!stateInfo.containsKey(s)){ // lock the hashmap in case key isn't present
 				threadInfo.hashMapLock.lock();
 					if(!stateInfo.containsKey(s)){

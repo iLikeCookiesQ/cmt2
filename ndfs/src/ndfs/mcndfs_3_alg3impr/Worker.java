@@ -161,8 +161,6 @@ public class Worker implements Runnable {
 		boolean allRed = true;
 		colors.color(s, Color.CYAN);
 
-		// randomly choose a child to begin recursive calls.
-		// access remainder of children in order.
 		List<State> list = graph.post(s);
 		int childCount = list.size();
 		if(childCount != 0){
@@ -173,7 +171,7 @@ public class Worker implements Runnable {
 			// this saves some locking.
 			if(!stateInfo.containsKey(s)){
 				firstChildIdx = threadNo;
-			} else {
+			} else { // get our unique starting child from this node from permutationBlue
 				threadInfo.hashMapLock.lock();
 					inf = stateInfo.get(s);
 					firstChildIdx = inf.permutationBlue.getAndIncrement();
